@@ -1,3 +1,6 @@
 [submodule "contrib/testinator"]
 	path = contrib/testinator
 	url = https://github.com/elbeno/testinator.git
+[submodule "contrib/spirit"]
+	path = contrib/spirit
+	url = https://github.com/boostorg/spirit.git
