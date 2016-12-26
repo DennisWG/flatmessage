@@ -43,3 +43,6 @@
 [submodule "contrib/type_index"]
 	path = contrib/type_index
 	url = https://github.com/boostorg/type_index.git
+[submodule "contrib/throw_exception"]
+	path = contrib/throw_exception
+	url = https://github.com/boostorg/throw_exception.git
