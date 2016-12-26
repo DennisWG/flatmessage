@@ -31,3 +31,6 @@
 [submodule "contrib/tti"]
 	path = contrib/tti
 	url = https://github.com/boostorg/tti.git
+[submodule "contrib/function_types"]
+	path = contrib/function_types
+	url = https://github.com/boostorg/function_types.git
