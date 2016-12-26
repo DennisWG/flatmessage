@@ -16,3 +16,6 @@
 [submodule "contrib/type_traits"]
 	path = contrib/type_traits
 	url = https://github.com/boostorg/type_traits.git
+[submodule "contrib/utility"]
+	path = contrib/utility
+	url = https://github.com/boostorg/utility.git
