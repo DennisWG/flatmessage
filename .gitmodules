@@ -28,3 +28,6 @@
 [submodule "contrib/static_assert"]
 	path = contrib/static_assert
 	url = https://github.com/boostorg/static_assert.git
+[submodule "contrib/tti"]
+	path = contrib/tti
+	url = https://github.com/boostorg/tti.git
