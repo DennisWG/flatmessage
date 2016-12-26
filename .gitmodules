@@ -82,3 +82,6 @@
 [submodule "contrib/smart_ptr"]
 	path = contrib/smart_ptr
 	url = https://github.com/boostorg/smart_ptr.git
+[submodule "contrib/typeof"]
+	path = contrib/typeof
+	url = https://github.com/boostorg/typeof.git
