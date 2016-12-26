@@ -73,3 +73,6 @@
 [submodule "contrib/regex"]
 	path = contrib/regex
 	url = https://github.com/boostorg/regex.git
+[submodule "contrib/integer"]
+	path = contrib/integer
+	url = https://github.com/boostorg/integer.git
