@@ -58,3 +58,6 @@
 [submodule "contrib/math"]
 	path = contrib/math
 	url = https://github.com/boostorg/math.git
+[submodule "contrib/optional"]
+	path = contrib/optional
+	url = https://github.com/boostorg/optional.git
