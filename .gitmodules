@@ -61,3 +61,6 @@
 [submodule "contrib/optional"]
 	path = contrib/optional
 	url = https://github.com/boostorg/optional.git
+[submodule "contrib/range"]
+	path = contrib/range
+	url = https://github.com/boostorg/range.git
