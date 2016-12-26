@@ -40,3 +40,6 @@
 [submodule "contrib/variant"]
 	path = contrib/variant
 	url = https://github.com/boostorg/variant.git
+[submodule "contrib/type_index"]
+	path = contrib/type_index
+	url = https://github.com/boostorg/type_index.git
