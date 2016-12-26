@@ -22,3 +22,9 @@
 [submodule "contrib/core"]
 	path = contrib/core
 	url = https://github.com/boostorg/core.git
+[submodule "contrib/preprocessor"]
+	path = contrib/preprocessor
+	url = https://github.com/boostorg/preprocessor.git
+[submodule "contrib/static_assert"]
+	path = contrib/static_assert
+	url = https://github.com/boostorg/static_assert.git
