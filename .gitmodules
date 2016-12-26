@@ -67,3 +67,6 @@
 [submodule "contrib/iterator"]
 	path = contrib/iterator
 	url = https://github.com/boostorg/iterator.git
+[submodule "contrib/concept_check"]
+	path = contrib/concept_check
+	url = https://github.com/boostorg/concept_check.git
