@@ -52,3 +52,6 @@
 [submodule "contrib/move"]
 	path = contrib/move
 	url = https://github.com/boostorg/move.git
+[submodule "contrib/functional"]
+	path = contrib/functional
+	url = https://github.com/boostorg/functional.git
