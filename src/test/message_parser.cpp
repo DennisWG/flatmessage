@@ -14,20 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
-#include <testinator.h>
 #include <parser/message.hpp>
+#include <testinator.h>
+
 
 DEF_TEST(ParseSingleMessage, message_parser)
 {
     using boost::spirit::x3::phrase_parse;
     using boost::spirit::x3::ascii::space;
 
-    std::string const data =
-        "message foo"
-        "{"
-        "    uint8 id;"
-        "}";
+    std::string const data = "message foo"
+                             "{"
+                             "    uint8 id;"
+                             "}";
 
     auto begin = data.begin();
     auto const end = data.end();
@@ -59,12 +58,11 @@ DEF_TEST(ParseSingleMessageWithRules, message_parser)
     using boost::spirit::x3::phrase_parse;
     using boost::spirit::x3::ascii::space;
 
-    std::string const data =
-        "message foo"
-        "{"
-        "    optional uint8 id;"
-        "    repeated uint32 size;"
-        "}";
+    std::string const data = "message foo"
+                             "{"
+                             "    optional uint8 id;"
+                             "    repeated uint32 size;"
+                             "}";
 
     auto begin = data.begin();
     auto const end = data.end();
@@ -106,15 +104,14 @@ DEF_TEST(ParseMultipleMessages, message_parser)
     using boost::spirit::x3::phrase_parse;
     using boost::spirit::x3::ascii::space;
 
-    std::string const data =
-        "message foo"
-        "{"
-        "    repeated\nuint8 id;"
-        "}"
-        "message bar"
-        "{\n"
-        "    int8 id;"
-        "}";
+    std::string const data = "message foo"
+                             "{"
+                             "    repeated\nuint8 id;"
+                             "}"
+                             "message bar"
+                             "{\n"
+                             "    int8 id;"
+                             "}";
 
     auto begin = data.begin();
     auto const end = data.end();
