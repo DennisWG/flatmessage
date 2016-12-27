@@ -48,7 +48,8 @@ namespace playground
 
         auto const rules = x3::rule<class rules, std::string>() = string("optional") | string("repeated");
 
-        auto const attribute = x3::rule<class attribute, std::tuple<boost::optional<std::string>, std::string, std::string>>()
+        auto const attribute
+            = x3::rule<class attribute, std::tuple<boost::optional<std::string>, std::string, std::string>>()
             = lexeme[-(rules >> omit[+space]) >> name >> omit[+space] >> name >> ';'];
 
         auto const message = x3::rule<class message, ast::message>()
