@@ -44,14 +44,24 @@ namespace QuickMessage
         using ascii::space;
         using x3::string;
 
+        // An alphabetic character followed by any number of alphanumeric characters
+        // Valid example: validName123
+        // Invalid example: 3invalid
         auto const name = x3::rule<class name, std::string>() = alpha >> *alnum;
 
+        // A set of rules for an attribute
+        // TODO: give this one a better name than "rule"
         auto const rules = x3::rule<class rules, std::string>() = string("optional") | string("repeated");
 
+        // An optional rule, followed by a name, followed by a name, followed by a semicolon
+        // Valid example: optional Color eyeColor;
+        // Invalid example: optional eyeColor;
         auto const attribute
             = x3::rule<class attribute, std::tuple<boost::optional<std::string>, std::string, std::string>>()
             = lexeme[-(rules >> omit[+space]) >> name >> omit[+space] >> name >> ';'];
 
+        // The structure of a message.
+        // Example: message Ping { int64 time; int32 latency; }
         auto const message = x3::rule<class message, ast::message>()
             = lit("message") >> name >> '{' >> +attribute >> '}';
 
