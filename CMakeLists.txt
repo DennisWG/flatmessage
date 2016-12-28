@@ -70,5 +70,15 @@ macro(ADD_TESTINATOR_TESTS executable)
   ADD_INDIVIDUAL_TESTS(${executable} "COMPLEXITY_PROPERTY" "ComplexityProperty")
 endmacro()
 
+# Compile flags
+if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  set(MY_CXX_FLAGS_LIST
+	/std:c++latest
+    )
+  string(REPLACE ";" " " MY_CXX_FLAGS "${MY_CXX_FLAGS_LIST}")
+
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MY_CXX_FLAGS}")
+endif()
+
 add_subdirectory (src/lib)
 add_subdirectory (src/test)
