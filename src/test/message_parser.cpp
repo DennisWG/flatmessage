@@ -31,8 +31,8 @@ DEF_TEST(ParseSingleMessage, message_parser)
     auto begin = data.begin();
     auto const end = data.end();
 
-    playground::ast::message result;
-    bool success = phrase_parse(begin, end, playground::parser::message, space, result);
+    QuickMessage::ast::message result;
+    bool success = phrase_parse(begin, end, QuickMessage::parser::message, space, result);
 
     EXPECT(result.name == "foo");
     EXPECT(result.attributes.size() == 1);
@@ -67,8 +67,8 @@ DEF_TEST(ParseSingleMessageWithRules, message_parser)
     auto begin = data.begin();
     auto const end = data.end();
 
-    playground::ast::message result;
-    bool success = phrase_parse(begin, end, playground::parser::message, space, result);
+    QuickMessage::ast::message result;
+    bool success = phrase_parse(begin, end, QuickMessage::parser::message, space, result);
 
     EXPECT(result.name == "foo");
     EXPECT(result.attributes.size() == 2);
@@ -116,8 +116,8 @@ DEF_TEST(ParseMultipleMessages, message_parser)
     auto begin = data.begin();
     auto const end = data.end();
 
-    std::vector<playground::ast::message> result;
-    bool success = phrase_parse(begin, end, +playground::parser::message, space, result);
+    std::vector<QuickMessage::ast::message> result;
+    bool success = phrase_parse(begin, end, +QuickMessage::parser::message, space, result);
 
     EXPECT(result.size() == 2);
 

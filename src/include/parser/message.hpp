@@ -28,7 +28,7 @@ limitations under the License.
 
 #include "../ast/message.hpp"
 
-namespace playground
+namespace QuickMessage
 {
     namespace parser
     {

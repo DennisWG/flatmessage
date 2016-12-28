@@ -19,7 +19,7 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-namespace playground
+namespace QuickMessage
 {
     namespace ast
     {
@@ -31,4 +31,4 @@ namespace playground
     }
 }
 
-BOOST_FUSION_ADAPT_STRUCT(playground::ast::message, name, attributes)
+BOOST_FUSION_ADAPT_STRUCT(QuickMessage::ast::message, name, attributes)
