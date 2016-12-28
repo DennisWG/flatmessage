@@ -16,7 +16,13 @@ limitations under the License.
 
 #pragma once
 
-#include <boost/spirit/home/x3.hpp>
+#include <boost/config/warning_disable.hpp>
+#include <boost/fusion/include/adapt_struct.hpp>
+#include <boost/fusion/include/io.hpp>
+#include <boost/fusion/include/std_pair.hpp>
+
+#include "../ast/enum.hpp"
+#include "common.hpp"
 
 namespace QuickMessage
 {
@@ -27,20 +33,20 @@ namespace QuickMessage
 
         using x3::lit;
         using x3::lexeme;
-        using x3::eol;
-        using x3::eoi;
+        using x3::omit;
         using ascii::char_;
+        using ascii::space;
+        using x3::string;
+        using x3::int_;
 
-        // Parses a C-Style single line comment.
-        // Example: // this is a comment!
-        auto const singleLineComment = x3::rule<class singleLineComment>() = lit("//") >> *(char_ - eol) >> (eol | eoi);
+        // Blue = 1,
+        auto const enumValue = x3::rule<class enumValue, std::pair<std::string, int>>() = name >> '=' >> int_ >> ',';
 
-        // Parses a C-Style multi line comment.
-        // Example: /* this is a comment! */
-        auto const multiLineComment = x3::rule<class multiLineComment>()
-            = lit("/*") >> *(char_ - char_('*')) >> lit("*/");
+        // enum Color : word { <enumValue> }
+        auto const enum_ = x3::rule<class enum_, ast::enum_>()
+            = lit("enum") >> name >> ':' >> (string("byte") | string("word") | string("dword") | string("qword")) >> '{'
+              >> +enumValue >> '}';
 
-        // Combines both single and multi line comments for the skip parser
-        auto const comment = singleLineComment | multiLineComment;
+        BOOST_SPIRIT_DEFINE(enum_);
     }
 }

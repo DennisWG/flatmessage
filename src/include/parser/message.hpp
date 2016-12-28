@@ -21,12 +21,12 @@ limitations under the License.
 #include <boost/fusion/include/io.hpp>
 #include <boost/fusion/include/std_pair.hpp>
 #include <boost/fusion/include/std_tuple.hpp>
-#include <boost/spirit/home/x3.hpp>
 
 #include <string>
 #include <vector>
 
 #include "../ast/message.hpp"
+#include "common.hpp"
 
 namespace QuickMessage
 {
@@ -38,16 +38,9 @@ namespace QuickMessage
         using x3::lit;
         using x3::lexeme;
         using x3::omit;
-        using ascii::alpha;
-        using ascii::alnum;
         using ascii::char_;
         using ascii::space;
         using x3::string;
-
-        // An alphabetic character followed by any number of alphanumeric characters
-        // Valid example: validName123
-        // Invalid example: 3invalid
-        auto const name = x3::rule<class name, std::string>() = alpha >> *alnum;
 
         // A set of rules for an attribute
         // TODO: give this one a better name than "rule"

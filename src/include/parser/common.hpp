@@ -25,22 +25,12 @@ namespace QuickMessage
         namespace x3 = boost::spirit::x3;
         namespace ascii = boost::spirit::x3::ascii;
 
-        using x3::lit;
-        using x3::lexeme;
-        using x3::eol;
-        using x3::eoi;
-        using ascii::char_;
+        using ascii::alpha;
+        using ascii::alnum;
 
-        // Parses a C-Style single line comment.
-        // Example: // this is a comment!
-        auto const singleLineComment = x3::rule<class singleLineComment>() = lit("//") >> *(char_ - eol) >> (eol | eoi);
-
-        // Parses a C-Style multi line comment.
-        // Example: /* this is a comment! */
-        auto const multiLineComment = x3::rule<class multiLineComment>()
-            = lit("/*") >> *(char_ - char_('*')) >> lit("*/");
-
-        // Combines both single and multi line comments for the skip parser
-        auto const comment = singleLineComment | multiLineComment;
+        // An alphabetic character followed by any number of alphanumeric characters
+        // Valid example: validName123
+        // Invalid example: 3invalid
+        auto const name = x3::rule<class name, std::string>() = alpha >> *alnum;
     }
 }
