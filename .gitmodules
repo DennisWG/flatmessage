@@ -88,3 +88,6 @@
 [submodule "contrib/filesystem"]
 	path = contrib/filesystem
 	url = https://github.com/boostorg/filesystem.git
+[submodule "contrib/system"]
+	path = contrib/system
+	url = https://github.com/boostorg/system.git
