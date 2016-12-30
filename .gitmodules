@@ -85,3 +85,6 @@
 [submodule "contrib/typeof"]
 	path = contrib/typeof
 	url = https://github.com/boostorg/typeof.git
+[submodule "contrib/filesystem"]
+	path = contrib/filesystem
+	url = https://github.com/boostorg/filesystem.git
