@@ -8,6 +8,7 @@ include_directories ("${PROJECT_SOURCE_DIR}/src/include")
 # external submodules
 include_directories ("${PROJECT_SOURCE_DIR}/contrib/testinator/src/include")
 
+set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.63.0 COMPONENTS system filesystem REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIR})
