@@ -11,8 +11,20 @@ These guidelines aim to provide advice on both the formatting of code contributi
   - [Switch](#switch)
   - [Argument Ordering](#argument-ordering)
   - [Variable Scope](#variable-scope)
+  - [CV Qualifiers, Pointers and References](#cv-qualifiers-pointers-and-references)
 - [Naming Conventions](#naming-conventions)
+  - [Functions and Methods](#functions-and-methods)
+  - [Output Arguments](#output-arguments)
+  - [Constants](#constants)
+  - [Variables](#variables)
+  - [User Defined Types](#user-defined-types)
+  - [Namespaces](#namespaces)
 - [Language Usage](#language-usage)
+  - [Header Guards](#header-guards)
+  - [Header Inclusion Order](#header-inclusion-order)
+  - [Prefer enum class over enum](#prefer-enum-class-over-enum)
+  - [Exceptions](#exceptions)
+  - [Pointers](#pointers)
 
 ## Code Formatting
 Coding styles vary from person to person and everyone has their own preferences. In order to maintain readability it's required to just pick one and then stick to it. To achieve this goal, a '.clang-format' file is attached to the project.
