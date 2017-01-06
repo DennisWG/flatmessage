@@ -69,7 +69,7 @@ auto parse = [](std::string const& source, fs::path inputPath) {
     return out.str();
 };
 
-DEF_TEST(foo, Suite2)
+DEF_TEST(ParseInputFiles, parse_expression)
 {
     auto compare
         = [](fs::path inputPath, fs::path expectPath) { return testing::compare(inputPath, expectPath, parse); };

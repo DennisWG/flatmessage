@@ -45,6 +45,7 @@ namespace flatmessage {
         {
             boost::optional<std::string> specifier;
             std::string type;
+            boost::optional<int> arraySize;
             std::string name;
         };
 

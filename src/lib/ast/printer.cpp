@@ -58,7 +58,11 @@ namespace flatmessage
             if (attribute.specifier)
                 out << *attribute.specifier << ", ";
 
-            out << attribute.type << ", ";
+            out << attribute.type;
+            if (attribute.arraySize)
+                out << '[' << *attribute.arraySize << ']';
+
+            out << ", ";
             out << attribute.name;
             out << ')';
         }

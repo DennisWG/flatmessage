@@ -58,7 +58,7 @@ namespace flatmessage
 
         auto const message_def = lit("message") > identifier > '{' > attribute_vector > '}';
 
-        auto const attribute_def = -specifier >> identifier > identifier > ';';
+        auto const attribute_def = -specifier >> identifier >> -('[' > int_ > ']') > identifier > ';';
 
         auto const specifier_def = string("optional") | string("repeated");
 

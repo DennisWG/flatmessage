@@ -1,0 +1,4 @@
+message Foo
+{
+    optional int[5] values;
+}
