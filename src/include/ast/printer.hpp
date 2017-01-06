@@ -14,3 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#pragma once
+
+#include "ast.hpp"
+
+#include <boost/variant.hpp>
+
+#include <iostream>
+
+namespace flatmessage
+{
+    namespace ast
+    {
+        void print(std::ostream& out, ast const& ast);
+    }
+}

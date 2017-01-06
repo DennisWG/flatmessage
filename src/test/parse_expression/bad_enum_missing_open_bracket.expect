@@ -1,0 +1,4 @@
+In file <%.*?bad_enum_missing_open_bracket.input%>, line 1:
+Error! Expecting '{' here:
+enum Color:byte }
+________________^_

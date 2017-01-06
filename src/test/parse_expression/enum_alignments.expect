@@ -1,0 +1,4 @@
+enum Test:byte (A, 0)
+enum Color:word (Red, 1)(Green, 2)(Blue, 3)
+enum Intensity:dword (High, 1)(Low, 2)
+enum Foo:qword (Bar, 153452)

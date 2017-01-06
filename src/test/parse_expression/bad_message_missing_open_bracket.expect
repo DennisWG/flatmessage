@@ -1,0 +1,4 @@
+In file <%.*?bad_message_missing_open_bracket.input%>, line 2:
+Error! Expecting '{' here:
+    uint8 dummy;
+____^_

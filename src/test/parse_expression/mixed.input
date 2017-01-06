@@ -1,0 +1,14 @@
+enum Color : byte
+{
+    Red = 1,
+    Green = 2,
+    Blue = 3,
+}
+
+message SetColor
+{
+    uint8 id;
+    uint32 messageLength;
+    uint32 crc;
+    Color color;
+}

@@ -1,0 +1,6 @@
+message foo
+{
+    uint8 id;
+    uint16 size;
+    int foo;
+}

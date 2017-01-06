@@ -1,0 +1,4 @@
+enum Color : dword
+{
+    Red = 1,
+    Green = 2,

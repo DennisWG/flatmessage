@@ -1,0 +1,4 @@
+In file <%.*?bad_enum_missing_name.input%>, line 1:
+Error! Expecting identifier here:
+enum : byte {
+_____^_

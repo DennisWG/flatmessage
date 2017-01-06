@@ -14,22 +14,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#pragma once
+#include "../ast/ast.hpp"
+#include "config.hpp"
 
-#include <string>
-#include <vector>
+#include <boost/spirit/home/x3.hpp>
 
-namespace QuickMessage
+namespace flatmessage
 {
-    namespace ast
-    {
-        struct enum_
-        {
-            std::string name;
-            std::string alignment;
-            std::vector<std::pair<std::string, int>> values;
-        };
-    }
-}
+    namespace x3 = boost::spirit::x3;
 
-BOOST_FUSION_ADAPT_STRUCT(QuickMessage::ast::enum_, name, alignment, values)
+    namespace parser
+    {
+        struct message_class;
+        struct enumeration_class;
+
+        using message_type = x3::rule<message_class, ast::message>;
+        using enumeration_type = x3::rule<enumeration_class, ast::enumeration>;
+
+        BOOST_SPIRIT_DECLARE(message_type, enumeration_type);
+    }
+
+    parser::message_type const& message();
+    parser::enumeration_type const& enumeration();
+}

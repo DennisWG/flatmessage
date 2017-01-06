@@ -1,0 +1,6 @@
+enum Foo : word
+{
+    Red = 1,
+    Green = 0
+    Blue = 4,
+}

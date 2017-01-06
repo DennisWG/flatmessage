@@ -1,0 +1,4 @@
+In file <%.*?bad_enum_missing_comma.input%>, line 5:
+Error! Expecting ',' here:
+    Blue = 4,
+____^_

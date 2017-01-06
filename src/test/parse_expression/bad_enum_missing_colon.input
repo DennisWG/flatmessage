@@ -1,0 +1,4 @@
+enum foo byte
+{
+    Test = 1,
+}

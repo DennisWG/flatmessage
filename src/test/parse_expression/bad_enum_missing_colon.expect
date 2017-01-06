@@ -1,0 +1,4 @@
+In file E:/Programmieren/C++/playground/build/2af71fc6-b03b-5e3d-b387-b53e58e68c3d/x64-Debug/src/test/Debug/parse_expression/bad_enum_missing_colon.input, line 1:
+Error! Expecting ':' here:
+enum foo byte
+_________^_

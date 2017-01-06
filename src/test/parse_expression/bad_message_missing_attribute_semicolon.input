@@ -1,0 +1,4 @@
+message foo
+{
+    uint8 id
+}

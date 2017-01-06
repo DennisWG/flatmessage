@@ -1,0 +1,4 @@
+In file <%.*?bad_enum_missing_close_bracket.input%>, line 5:
+Error! Expecting '}' here:
+
+^_

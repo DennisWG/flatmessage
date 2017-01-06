@@ -1,0 +1,4 @@
+In file <%.*?bad_enum_missing_value_value.input%>, line 3:
+Error! Expecting number here:
+    Red = Blue = 2,
+__________^_

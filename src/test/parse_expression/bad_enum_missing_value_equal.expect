@@ -1,0 +1,4 @@
+In file <%.*?bad_enum_missing_value_equal.input%>, line 4:
+Error! Expecting '=' here:
+    Test 3,
+_________^_

@@ -1,0 +1,5 @@
+enum Foo : byte
+{
+    Bar = 1,
+    Test 3,
+}

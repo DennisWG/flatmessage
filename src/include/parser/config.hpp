@@ -16,23 +16,25 @@ limitations under the License.
 
 #pragma once
 
+#include "error_handler.hpp"
+
 #include <boost/spirit/home/x3.hpp>
 
 namespace flatmessage
 {
     namespace parser
     {
-        using x3::raw;
-        using x3::lexeme;
-        using x3::alpha;
-        using x3::alnum;
+        // Our Iterator Type
+        using iterator_type = std::string::const_iterator;
 
-        struct identifier_class;
-        typedef x3::rule<identifier_class, std::string> identifier_type;
-        identifier_type const identifier = "identifier";
+        // The Phrase Parse Context
+        using phrase_context_type = x3::phrase_parse_context<x3::ascii::space_type>::type;
 
-        auto const identifier_def = raw[lexeme[(alpha | '_') >> *(alnum | '_')]];
+        // Our Error Handler
+        using error_handler_type = error_handler<iterator_type>;
 
-        BOOST_SPIRIT_DEFINE(identifier);
+        // Combined Error Handler and Phrase Parse Context
+        using context_type = x3::with_context<error_handler_tag, std::reference_wrapper<error_handler_type> const,
+                                              phrase_context_type>::type;
     }
 }

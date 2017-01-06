@@ -1,0 +1,3 @@
+message bad
+    uint8 dummy;
+}
