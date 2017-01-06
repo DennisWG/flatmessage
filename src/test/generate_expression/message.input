@@ -1,0 +1,7 @@
+message Foo
+{
+    uint8 id;
+    uint16 size;
+    optional uint8[32] crc;
+    repeated uint32 data;
+}

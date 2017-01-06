@@ -1,0 +1,31 @@
+enum Color : dword
+{
+    CornflowerBlue = 1,
+    Black = 123,
+    Test = 2,
+}
+
+enum Type : word
+{
+    Something = 1,
+    Foobar = 2,
+}
+
+message Head
+{
+    uint8 id;
+    uint16 size;
+    optional uint32 crc;
+}
+
+message Complex
+{
+    Color color;
+    Type type;
+}
+
+message TheMessage
+{
+    Head head;
+    repeated Complex[2] complex;
+}

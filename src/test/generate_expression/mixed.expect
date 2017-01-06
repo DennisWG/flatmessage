@@ -1,0 +1,31 @@
+enum class Color : uint32_t
+{
+    CornflowerBlue = 1,
+    Black = 123,
+    Test = 2,
+}
+
+enum class Type : uint16_t
+{
+    Something = 1,
+    Foobar = 2,
+}
+
+struct Head
+{
+    uint8_t id;
+    uint16_t size;
+    boost::optional<uint32_t> crc;
+}
+
+struct Complex
+{
+    Color color;
+    Type type;
+}
+
+struct TheMessage
+{
+    Head head;
+    std::vector<std::array<Complex, 2>> complex;
+}

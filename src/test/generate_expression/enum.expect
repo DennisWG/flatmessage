@@ -1,0 +1,6 @@
+enum class Color : uint64_t
+{
+    Red = 1,
+    Green = 2,
+    Blue = 3,
+}
