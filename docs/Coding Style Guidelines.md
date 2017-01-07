@@ -51,18 +51,18 @@ Braces always have to go into their own lines and indented to the same level as 
 
 Example (do not):
 ```cpp
-class Foo {
-    void Empty()
+class foo {
+    void empty()
     {
     }
     
-    void SingleLine() {
+    void single_line() {
         std::cout << std::endl;
     }
     
-    void SingleLineOverLength() { std::cout << "this instruction is way too long and should be placed in its own line" << std:: endl; }
+    void single_line_over_length() { std::cout << "this instruction is way too long and should be placed in its own line" << std:: endl; }
     
-    void Foobar()
+    void foobar()
     {
         if(false) {
             std::cout << "oops!";
@@ -76,16 +76,16 @@ class Foo {
 
 Example (do):
 ```cpp
-class Foo
+class foo
 {
-    void Empty() {}
-    void SingleLine() { std::cout << std::endl; }
-    void SingleLineOverLength()
+    void empty() {}
+    void single_line() { std::cout << std::endl; }
+    void single_line_over_length()
     {
         std::cout << "this instruction is way too long and should be placed in its own line" << std::endl;
     }
 
-    void Foobar()
+    void foobar()
     {
         if (false)
         {
@@ -104,27 +104,27 @@ Namespace bodies have to be indented and nested namespaces always start in a new
 
 Example (do not):
 ```cpp
-namespace Foo {
-int Foo();
+namespace foo {
+int foo();
 }
 
-namespace Foo { namespace Bar {
-int Foo();
+namespace foo { namespace bar {
+int foo();
 }}
 ```
 
 Example (do):
 ```cpp
-namespace Foo
+namespace foo
 {
-    int Foo();
+    int foo();
 }
 
-namespace Foo
+namespace foo
 {
-    namespace Bar
+    namespace bar
     {
-        int Foo();
+        int foo();
     }
 }
 ```
@@ -161,12 +161,12 @@ Order the inputs first, then the outputs.
 
 Example (do not):
 ```cpp
-bool Calculate(int& outResult, int a, int b);
+bool calculate(int& outResult, int a, int b);
 ```
 
 Example (do):
 ```cpp
-bool Calculate(int a, int b, int& outResult);
+bool calculate(int a, int b, int& outResult);
 ```
 
 ### Variable Scope
@@ -174,16 +174,16 @@ Variables are to be declared in the scope they're used in as near to their point
 
 Example (do not):
 ```cpp
-void Foo(bar const& bar)
+void foo(bar const& bar)
 {
-    Something woof;
+    something woof;
     // ...
     int n = 0;
-    for (auto& meow : bar.Iterate())
+    for (auto& meow : bar.iterate())
     {
-        woof = meow.Something();
+        woof = meow.something();
         // ...
-        bar.SomethingElse(woof, n);
+        bar.something_else(woof, n);
     }
     std::cout << n << std::endl;
 }
@@ -191,15 +191,15 @@ void Foo(bar const& bar)
 
 Example (do):
 ```cpp
-void Foo(bar const& bar)
+void foo(bar const& bar)
 {
     // ...
     int n = 0;
-    for (auto& meow : bar.Iterate())
+    for (auto& meow : bar.iterate())
     {
         // ...
-        auto woof = meow.Something();
-        bar.SomethingElse(woof, n);
+        auto woof = meow.something();
+        bar.something_else(woof, n);
     }
     std::cout << n << std::endl;
 }
@@ -223,31 +223,31 @@ std::string volatile const& foo(data);
 ## Naming Conventions
 
 ### Functions and Methods
-Functions and methods are to be named in CamelCase starting with an upper case letter.
+Functions and methods are to be named in all lower case letters with different words sperated by a single underscore `_`.
 
 Example (do not):
 ```cpp
-void my_function();
+void MyFunction();
 void myFunction();
 void My_Function();
 ```
 
 Example (do):
 ```cpp
-void MyFunction();
+void my_function();
 ```
 
 ### Output Arguments
-Output arguments of a function or method have to be prefixed with `out`.
+Output arguments of a function or method have to be prefixed with `out_`.
 
 Example (do):
 ```cpp
-void DoStuff(int a, int b, int& outResult);
+void do_stuff(int a, int b, int& out_result);
 ```
 
 ### Constants
-Constants shall be written in all upper case letters with underscores seperating words. Constants listed within an `enum class` elements are to be written in CamelCase starting with an upper case character.
-Enums (both `enum` and `enum class`) are to be named in singular and to be written in CamelCase.
+Constants shall be written in all upper case letters with a single underscore seperating words. Constants listed within an `enum class` elements are to be written in all lower case letters with different words sperated by a single underscore.
+Enums (both `enum` and `enum class`) are to be named in singular and to be written in all lower case letters with different words sperated by a single underscore.
 
 Example (do not):
 ```cpp
@@ -255,7 +255,7 @@ constexpr int milliseconds = 1000;
 constexpr int Seconds =  1 * milliseconds;
 constexpr int MAXPINGDELTA = 20 * Seconds;
 
-enum colors
+enum Colors
 {
     cornflowerBlue = 1,
     VanDykeBrown = 2,
@@ -274,39 +274,39 @@ constexpr int MILLISECONDS = 1000;
 constexpr int SECONDS =  1 * MILLISECONDS;
 constexpr int MAX_PING_DELTA = 20 * SECONDS;
 
-enum Color
+enum color
 {
     CORNFLOWER_BLUE = 1,
     VAN_DYKE_BROWN = 2,
 }
 
-enum class Color
+enum class color
 {
-    CornflowerBlue = 1,
-    VanDykeBrown = 2,
+    cornflower_blue = 1,
+    van_dyke_brown = 2,
 }
 ```
 
 ### Variables
-Variable names have to be written in CamelCase starting with a lower case character.
+Variable names have to be written in all lower case letters with different words sperated by a single underscore.
 
 Example (do):
 ```cpp
-std::string myFancyString;
-int justAnOrdinaryInteger;
+std::string my_fancy_string;
+int just_an_ordinary_integer;
 ```
 
 ### User Defined Types
-User defined types have to be written in CamelCase starting with a upper case character.
+User defined types have to be written in all lower case letters with different words sperated by a single underscore.
 
 Example (do):
 ```cpp
-struct MyStruct;
-class MyFancyClass;
+struct my_struct;
+class my_fancy_class;
 ```
 
 ### Namespaces
-Namespaces have to be written in CamelCase starting with an upper case character.
+Namespaces have to be written in all lower case letters.
 
 Example (do not):
 ```cpp
@@ -322,7 +322,7 @@ namespace myNamespace
 
 Example (do):
 ```cpp
-namespace MyNamespace
+namespace mynamespace
 {
     // ...
 }
@@ -361,16 +361,16 @@ Header files in each of these groups have to be sorted alphabetically.
 Example (do not):
 ```cpp
 #include <iostream>
-#include "MyFile.hpp"
-#include "RandomHeader.hpp"
+#include "my_file.hpp"
+#include "random_header.hpp"
 #include <boost/range.hpp>
 #include <vector>
 ```
 
 Example (do):
 ```cpp
-#include "MyFile.hpp"
-#include "RandomHeader.hpp"
+#include "my_file.hpp"
+#include "random_header.hpp"
 
 #include <boost/range.hpp>
 
@@ -379,23 +379,23 @@ Example (do):
 ```
 
 ### Prefer `enum class` over `enum`
-For type-safety purposes you should always prefer `enum class` over `enum`!
+For type-safety purposes, you should always prefer `enum class` over `enum`!
 
 Example:
 ```cpp
-enum BorderColor
+enum border_color
 {
     RED = 1,
     GREEN = 2,
     BLUE = 3,
 }
-enum BackgroundColor
+enum background_color
 {
     ORANGE = 1
     RED = 2,
 }
 
-void SetBackgroundColor(BackgroundColor color)
+void set_background_color(background_color color)
 {
     switch(color)
     {
@@ -407,28 +407,28 @@ void SetBackgroundColor(BackgroundColor color)
 SetBackgroundColor(RED); // Oops!
 ```
 ```cpp
-enum class BorderColor
+enum class border_color
 {
-    Red = 1,
-    Green = 2,
-    Blue = 3,
+    red = 1,
+    green = 2,
+    blue = 3,
 }
-enum class BackgroundColor
+enum class background_color
 {
-    Orange = 1
-    Red = 2,
+    orange = 1
+    red = 2,
 }
 
-void SetBackgroundColor(BackgroundColor color)
+void SetBackgroundColor(background_color color)
 {
     switch(color)
     {
-        case BackgroundColor::Red:
+        case background_color::red:
             // ...
     }
 }
 
-SetBackgroundColor(BackgroundColor::Red);
+SetBackgroundColor(background_color::red);
 ```
 
 ### Exceptions
