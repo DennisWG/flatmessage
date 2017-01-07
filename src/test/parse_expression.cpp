@@ -16,11 +16,11 @@ limitations under the License.
 
 #include <testinator.h>
 
-#include <ast/ast.hpp>
-#include <ast/printer.hpp>
-#include <parser/config.hpp>
-#include <parser/error_handler.hpp>
-#include <parser/expression.hpp>
+#include <flatmessage/ast/ast.hpp>
+#include <flatmessage/ast/printer.hpp>
+#include <flatmessage/parser/config.hpp>
+#include <flatmessage/parser/error_handler.hpp>
+#include <flatmessage/parser/expression.hpp>
 
 // TODO: remove this hack once boost no longer uses this deprecated function
 namespace std

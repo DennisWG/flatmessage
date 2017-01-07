@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include <ast/ast.hpp>
-#include <generator/cpp_generator.hpp>
+#include <flatmessage/ast/ast.hpp>
+#include <flatmessage/generator/cpp_generator.hpp>
 
 #include <map>
 

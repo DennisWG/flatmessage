@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include <parser/config.hpp>
-#include <parser/expression_def.hpp>
+#include <flatmessage/parser/config.hpp>
+#include <flatmessage/parser/expression_def.hpp>
 
 
 namespace flatmessage
