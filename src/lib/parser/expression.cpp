@@ -22,6 +22,7 @@ namespace flatmessage
 {
     namespace parser
     {
+        BOOST_SPIRIT_INSTANTIATE(data_type, iterator_type, context_type);
         BOOST_SPIRIT_INSTANTIATE(message_type, iterator_type, context_type);
         BOOST_SPIRIT_INSTANTIATE(enumeration_type, iterator_type, context_type);
     }

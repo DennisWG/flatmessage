@@ -29,6 +29,7 @@ namespace flatmessage
             void operator()(enumeration const& enumeration);
             void operator()(attribute const& attribute);
             void operator()(message const& message);
+            void operator()(data const& data);
 
             std::ostream& out;
         };
@@ -72,6 +73,16 @@ namespace flatmessage
             out << "message " << message.name << ' ';
 
             for (auto const& attribute : message.attributes)
+                (*this)(attribute);
+
+            out << std::endl;
+        }
+
+        void flatmessage::ast::visitor::operator()(data const & data)
+        {
+            out << "data " << data.name << ' ';
+
+            for (auto const& attribute : data.attributes)
                 (*this)(attribute);
 
             out << std::endl;

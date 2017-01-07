@@ -30,10 +30,17 @@ namespace flatmessage {
         namespace x3 = boost::spirit::x3;
 
         struct nil {};
+        struct data;
         struct message;
         struct attribute;
         struct enumeration;
         struct enum_value;
+
+        struct data : x3::position_tagged
+        {
+            std::string name;
+            std::vector<attribute> attributes;
+        };
 
         struct message : x3::position_tagged
         {
@@ -62,7 +69,7 @@ namespace flatmessage {
             int value;
         };
 
-        using ast = std::vector<boost::variant<message, enumeration>>;
+        using ast = std::vector<boost::variant<message, enumeration, data>>;
 
         // print functions for debugging
         inline std::ostream& operator<<(std::ostream& out, nil)

@@ -20,6 +20,11 @@ limitations under the License.
 
 #include <boost/fusion/include/adapt_struct.hpp>
 
+BOOST_FUSION_ADAPT_STRUCT(flatmessage::ast::data,
+    (std::string, name)
+    (std::vector<flatmessage::ast::attribute>, attributes)
+)
+
 BOOST_FUSION_ADAPT_STRUCT(flatmessage::ast::message,
     (std::string, name)
     (std::vector<flatmessage::ast::attribute>, attributes)

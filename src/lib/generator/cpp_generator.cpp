@@ -43,6 +43,7 @@ struct generator
     void operator()(flatmessage::ast::enumeration const& enumeration);
     void operator()(flatmessage::ast::attribute const& attribute);
     void operator()(flatmessage::ast::message const& message);
+    void operator()(flatmessage::ast::data const& data);
 
     std::ostream& out;
 
@@ -144,6 +145,18 @@ void generator::operator()(flatmessage::ast::message const& message)
     out << '{' << std::endl;
 
     for (auto const& attribute : message.attributes)
+        (*this)(attribute);
+
+    out << '}' << std::endl << std::endl;
+}
+
+void generator::operator()(flatmessage::ast::data const& data)
+{
+    out << "// Generated Code. Do not edit!" << std::endl;
+    out << "struct " << data.name << std::endl;
+    out << '{' << std::endl;
+
+    for (auto const& attribute : data.attributes)
         (*this)(attribute);
 
     out << '}' << std::endl << std::endl;

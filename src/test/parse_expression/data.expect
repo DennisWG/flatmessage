@@ -1,0 +1,2 @@
+data Head (uint8, code)(uint16, size)(optional, uint32, crc)
+data Bar (Head, head)(uint64, foobar)

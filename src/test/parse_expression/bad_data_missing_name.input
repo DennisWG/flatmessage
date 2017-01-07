@@ -1,0 +1,4 @@
+data {
+    uint8 test;
+    uint32 dummy;
+}

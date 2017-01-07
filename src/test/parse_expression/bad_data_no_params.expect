@@ -1,0 +1,4 @@
+In file <%.*?bad_data_no_params.input%>, line 1:
+Error! Expecting one or more attributes here:
+data bad {}
+__________^_

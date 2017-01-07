@@ -1,0 +1,4 @@
+In file <%.*?bad_data_missing_attribute_semicolon.input%>, line 4:
+Error! Expecting ';' here:
+}
+^_

@@ -47,6 +47,7 @@ namespace flatmessage
         using specifier_type = x3::rule<specifier_class, std::string>;
         using enum_value_type = x3::rule<enum_value_class, ast::enum_value>;
 
+        data_type const data = "data";
         message_type const message = "message";
         attribute_type const attribute = "attribute";
         specifier_type const specifier = "specifier";
@@ -55,6 +56,8 @@ namespace flatmessage
 
         auto const attribute_vector
             = x3::rule<struct attribute_vector_class, std::vector<ast::attribute>>("attribute_vector") = +attribute;
+
+        auto const data_def = lit("data") > identifier > '{' > attribute_vector > '}';
 
         auto const message_def = lit("message") > identifier > '{' > attribute_vector > '}';
 
@@ -74,8 +77,11 @@ namespace flatmessage
 
         auto const enum_value_def = identifier > '=' > number > ',';
 
-        BOOST_SPIRIT_DEFINE(message, attribute, specifier, enumeration, enum_value);
+        BOOST_SPIRIT_DEFINE(data, message, attribute, specifier, enumeration, enum_value);
 
+        struct data_class : annotation_base, error_handler_base
+        {
+        };
         struct message_class : annotation_base, error_handler_base
         {
         };
@@ -96,6 +102,7 @@ namespace flatmessage
 
 namespace flatmessage
 {
+    parser::data_type const& data() { return parser::data; }
     parser::message_type const& message() { return parser::message; }
     parser::enumeration_type const& enumeration() { return parser::enumeration; }
 }

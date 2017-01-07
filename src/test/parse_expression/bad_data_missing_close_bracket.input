@@ -1,0 +1,4 @@
+data foo
+{
+    uint8 id;
+    uint32 test;

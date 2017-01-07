@@ -1,0 +1,4 @@
+In file <%.*?bad_data_missing_close_bracket.input%>, line 4:
+Error! Expecting '}' here:
+    uint32 test;
+________________^_

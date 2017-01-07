@@ -1,0 +1,11 @@
+data Head
+{
+    uint8 code;
+    uint16 size;
+    optional uint32 crc;
+}
+
+data Data
+{
+    repeated uint32 data;
+}

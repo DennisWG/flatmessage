@@ -1,0 +1,4 @@
+In file <%.*?bad_data_missing_attribute_name.input%>, line 3:
+Error! Expecting identifier here:
+    uint8;
+_________^_

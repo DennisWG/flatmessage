@@ -25,15 +25,18 @@ namespace flatmessage
 
     namespace parser
     {
+        struct data_class;
         struct message_class;
         struct enumeration_class;
 
+        using data_type = x3::rule<data_class, ast::data>;
         using message_type = x3::rule<message_class, ast::message>;
         using enumeration_type = x3::rule<enumeration_class, ast::enumeration>;
 
-        BOOST_SPIRIT_DECLARE(message_type, enumeration_type);
+        BOOST_SPIRIT_DECLARE(data_type, message_type, enumeration_type);
     }
 
+    parser::data_type const& data();
     parser::message_type const& message();
     parser::enumeration_type const& enumeration();
 }

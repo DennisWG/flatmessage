@@ -14,7 +14,7 @@ enum class Type : uint16_t
 }
 
 // Generated Code. Do not edit!
-struct Head : public flatmessage::message
+struct Head
 {
     uint8_t id;
     uint16_t size;
@@ -22,7 +22,7 @@ struct Head : public flatmessage::message
 }
 
 // Generated Code. Do not edit!
-struct Complex : public flatmessage::message
+struct Complex
 {
     Color color;
     Type type;

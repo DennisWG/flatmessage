@@ -50,9 +50,9 @@ auto generate = [](std::string const& source, fs::path inputPath) {
     error_handler_type errorHandler(iter, end, out, inputPath.string());
 
     auto const parser = with<flatmessage::parser::error_handler_tag>(
-        std::ref(errorHandler))[+(flatmessage::message() | flatmessage::enumeration())];
+        std::ref(errorHandler))[+(flatmessage::message() | flatmessage::enumeration() | flatmessage::data())];
 
-    using result_type = std::vector<boost::variant<flatmessage::ast::message, flatmessage::ast::enumeration>>;
+    using result_type = flatmessage::ast::ast;
 
     result_type result;
     bool success = flatmessage::x3::phrase_parse(iter, end, parser, space, result);

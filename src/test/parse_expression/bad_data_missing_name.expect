@@ -1,0 +1,4 @@
+In file <%.*?bad_data_missing_name.input%>, line 1:
+Error! Expecting identifier here:
+data {
+_____^_
