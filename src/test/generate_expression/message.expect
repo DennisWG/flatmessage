@@ -1,4 +1,5 @@
-struct Foo
+// Generated Code. Do not edit!
+struct Foo : public flatmessage::message
 {
     uint8_t id;
     uint16_t size;

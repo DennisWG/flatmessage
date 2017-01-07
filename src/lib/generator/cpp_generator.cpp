@@ -77,6 +77,7 @@ void generator::operator()(flatmessage::ast::enum_value const& enumValue)
 
 void generator::operator()(flatmessage::ast::enumeration const& enumeration)
 {
+    out << "// Generated Code. Do not edit!" << std::endl;
     out << "enum class " << enumeration.name << " : " << type_aliases[enumeration.alignment] << std::endl;
     out << '{' << std::endl;
 
@@ -100,40 +101,30 @@ void generator::operator()(flatmessage::ast::attribute const& attribute)
 
     auto writeName = [&]() { out << ' ' << attribute.name; };
 
+    auto writeArray = [&]() {
+        out << "std::array<";
+        writeType();
+        out << ", " << *attribute.arraySize << '>';
+    };
+
+    auto writeSpecifier = [&](std::string const& type) {
+        out << type << '<';
+
+        if (attribute.arraySize)
+            writeArray();
+        else
+            writeType();
+
+        out << '>';
+        writeName();
+    };
+
     if (attribute.specifier)
     {
         if (*attribute.specifier == "repeated")
-        {
-            out << "std::vector<";
-
-            if (attribute.arraySize)
-            {
-                out << "std::array<";
-                writeType();
-                out << ", " << *attribute.arraySize << '>';
-            }
-            else
-                writeType();
-
-            out << '>';
-            writeName();
-        }
+            writeSpecifier("std::vector");
         else if (*attribute.specifier == "optional")
-        {
-            out << "boost::optional<";
-
-            if (attribute.arraySize)
-            {
-                out << "std::array<";
-                writeType();
-                out << ", " << *attribute.arraySize << '>';
-            }
-            else
-                writeType();
-
-            out << '>';
-            writeName();
-        }
+            writeSpecifier("boost::optional");
         else
             throw std::exception("Invalid specifier");
     }
@@ -148,7 +139,9 @@ void generator::operator()(flatmessage::ast::attribute const& attribute)
 
 void generator::operator()(flatmessage::ast::message const& message)
 {
-    out << "struct " << message.name << std::endl << '{' << std::endl;
+    out << "// Generated Code. Do not edit!" << std::endl;
+    out << "struct " << message.name << " : public flatmessage::message" << std::endl;
+    out << '{' << std::endl;
 
     for (auto const& attribute : message.attributes)
         (*this)(attribute);

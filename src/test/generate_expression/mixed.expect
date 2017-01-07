@@ -1,3 +1,4 @@
+// Generated Code. Do not edit!
 enum class Color : uint32_t
 {
     CornflowerBlue = 1,
@@ -5,26 +6,30 @@ enum class Color : uint32_t
     Test = 2,
 }
 
+// Generated Code. Do not edit!
 enum class Type : uint16_t
 {
     Something = 1,
     Foobar = 2,
 }
 
-struct Head
+// Generated Code. Do not edit!
+struct Head : public flatmessage::message
 {
     uint8_t id;
     uint16_t size;
     boost::optional<uint32_t> crc;
 }
 
-struct Complex
+// Generated Code. Do not edit!
+struct Complex : public flatmessage::message
 {
     Color color;
     Type type;
 }
 
-struct TheMessage
+// Generated Code. Do not edit!
+struct TheMessage : public flatmessage::message
 {
     Head head;
     std::vector<std::array<Complex, 2>> complex;

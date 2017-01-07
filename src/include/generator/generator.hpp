@@ -22,6 +22,11 @@ namespace flatmessage
 {
     namespace generator
     {
+        enum class code_generator
+        {
+            cpp,
+        };
+
         struct generator
         {
             virtual bool generate(std::ostream& out, ast::ast const& ast) = 0;

@@ -1,3 +1,4 @@
+// Generated Code. Do not edit!
 enum class Color : uint64_t
 {
     Red = 1,
