@@ -47,10 +47,10 @@ auto generate = [](std::string const& source, fs::path inputPath) {
     iterator_type end(source.end());
 
     std::stringstream out;
-    error_handler_type errorHandler(iter, end, out, inputPath.string());
+    error_handler_type error_handler(iter, end, out, inputPath.string());
 
     auto const parser = with<flatmessage::parser::error_handler_tag>(
-        std::ref(errorHandler))[+(flatmessage::message() | flatmessage::enumeration() | flatmessage::data())];
+        std::ref(error_handler))[+(flatmessage::message() | flatmessage::enumeration() | flatmessage::data())];
 
     using result_type = flatmessage::ast::ast;
 
