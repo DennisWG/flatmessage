@@ -20,6 +20,7 @@ limitations under the License.
 
 #include <boost/fusion/include/adapt_struct.hpp>
 
+// clang-format off
 BOOST_FUSION_ADAPT_STRUCT(flatmessage::ast::data,
     (std::string, name)
     (std::vector<flatmessage::ast::attribute>, attributes)
@@ -47,3 +48,4 @@ BOOST_FUSION_ADAPT_STRUCT(flatmessage::ast::enum_value,
     (std::string, name)
     (int, value)
 )
+// clang-format on

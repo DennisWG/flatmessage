@@ -24,11 +24,10 @@ limitations under the License.
 #include <fstream>
 #include <map>
 
-extern "C"
-{
+extern "C" {
+#include "lauxlib.h"
 #include "lua.h"
 #include "lualib.h"
-#include "lauxlib.h"
 }
 
 struct template_generator_impl
@@ -41,6 +40,7 @@ struct template_generator_impl
         using optional_string = boost::optional<std::string>;
         using optional_int = boost::optional<int>;
 
+        // clang-format off
         lua.new_usertype<optional_string>("optional_s",
             "isset", sol::property(&optional_string::is_initialized),
             "value", sol::property(static_cast<std::string& (optional_string::*)()>(&optional_string::get))
@@ -78,6 +78,7 @@ struct template_generator_impl
             "name", sol::readonly(&data::name),
             "attributes", sol::readonly(&data::attributes)
             );
+        // clang-format on
     }
 
     std::string generate(std::string const& templateCode)
@@ -116,9 +117,9 @@ namespace flatmessage
         {
             std::ifstream file(templateFilePath);
             if (!file)
-                throw std::exception{ ("Invalid file path \"" + templateFilePath + "\"").c_str() };
+                throw std::exception{("Invalid file path \"" + templateFilePath + "\"").c_str()};
 
-            _template = std::string{ (std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>() };
+            _template = std::string{(std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>()};
         }
 
         bool template_generator::generate(std::ostream& out, flatmessage::ast::ast const& ast)

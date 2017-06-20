@@ -24,11 +24,11 @@ namespace flatmessage
     {
         class template_generator : public generator
         {
-        public:
+          public:
             template_generator(std::string const& templateFilePath);
             bool generate(std::ostream& out, ast::ast const& ast) override;
 
-        private:
+          private:
             std::string _template;
         };
     }

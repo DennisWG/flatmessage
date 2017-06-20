@@ -74,11 +74,12 @@ auto template_generate = [](std::string const& source, fs::path inputPath) {
 
 DEF_TEST(GenerateInputFiles, template_generator)
 {
-    auto compare
-        = [](fs::path inputPath, fs::path expectPath) { return testing::compare(inputPath, expectPath, template_generate); };
+    auto compare = [](fs::path inputPath, fs::path expectPath) {
+        return testing::compare(inputPath, expectPath, template_generate);
+    };
 
     auto path = fs::current_path() / "generate_expression";
-	std::cout << path << '\n';
+    std::cout << path << '\n';
 
     bool success = true;
 

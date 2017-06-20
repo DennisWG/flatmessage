@@ -17,7 +17,6 @@ limitations under the License.
 #include <flatmessage/parser/config.hpp>
 #include <flatmessage/parser/expression_def.hpp>
 
-
 namespace flatmessage
 {
     namespace parser

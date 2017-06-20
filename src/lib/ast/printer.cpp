@@ -78,7 +78,7 @@ namespace flatmessage
             out << std::endl;
         }
 
-        void flatmessage::ast::visitor::operator()(data const & data)
+        void flatmessage::ast::visitor::operator()(data const& data)
         {
             out << "data " << data.name << ' ';
 

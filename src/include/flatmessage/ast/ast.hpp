@@ -16,15 +16,16 @@ limitations under the License.
 
 #pragma once
 
-#include <boost/spirit/home/x3/support/ast/variant.hpp>
-#include <boost/spirit/home/x3/support/ast/position_tagged.hpp>
 #include <boost/fusion/include/io.hpp>
 #include <boost/optional.hpp>
+#include <boost/spirit/home/x3/support/ast/position_tagged.hpp>
+#include <boost/spirit/home/x3/support/ast/variant.hpp>
 
 #include <list>
 #include <vector>
 
-namespace flatmessage {
+namespace flatmessage
+{
     namespace ast
     {
         namespace x3 = boost::spirit::x3;
