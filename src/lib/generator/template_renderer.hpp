@@ -1,6 +1,5 @@
 #pragma once
 
-
 const char* template_renderer = R"lua(
 -- adapted from https://github.com/hughperkins/luacpptemplater/blob/master/templater.lua
 --
