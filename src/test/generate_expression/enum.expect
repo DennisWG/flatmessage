@@ -1,7 +1,14 @@
-// Generated Code. Do not edit!
-enum class Color : uint64_t
-{
-    Red = 1,
-    Green = 2,
-    Blue = 3,
-}
+Enum #1 - Color:
+    Alignment: qword
+    Values:
+        #1 - Red = 1
+        #2 - Green = 2
+        #3 - Blue = 3
+
+Enum #2 - AnotherOne:
+    Alignment: byte
+    Values:
+        #1 - Just = 18
+        #2 - Some = 4
+        #3 - Values = -1
+        #4 - Hi = 667

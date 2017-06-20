@@ -4,3 +4,11 @@ enum Color : qword
     Green = 2,
     Blue = 3,
 }
+
+enum AnotherOne : byte
+{
+    Just = 18,
+    Some = 4,
+    Values = -1,
+    Hi=667,
+}

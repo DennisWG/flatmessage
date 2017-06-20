@@ -1,8 +1,5 @@
-// Generated Code. Do not edit!
-struct Foo : public flatmessage::message
-{
-    uint8_t id;
-    uint16_t size;
-    boost::optional<std::array<uint8_t, 32>> crc;
-    std::vector<uint32_t> data;
-}
+Foo
+    uint8, id
+    uint16, size
+    optional, uint8, 32, crc
+    repeated, uint32, data

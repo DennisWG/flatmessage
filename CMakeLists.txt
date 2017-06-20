@@ -13,6 +13,10 @@ find_package(Boost 1.63.0 COMPONENTS filesystem regex system REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIR})
 
+include_directories("${PROJECT_SOURCE_DIR}/contrib/lua-5.3.4/src")
+
+include_directories("${PROJECT_SOURCE_DIR}/contrib/sol2/single/sol")
+
 # Testing
 include(CTest)
 enable_testing()

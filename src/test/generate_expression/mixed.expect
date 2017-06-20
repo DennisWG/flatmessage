@@ -1,36 +1,32 @@
-// Generated Code. Do not edit!
-enum class Color : uint32_t
-{
-    CornflowerBlue = 1,
-    Black = 123,
-    Test = 2,
-}
+Enum #1 - Color:
+    Alignment: dword
+    Values:
+        #1 - CornflowerBlue = 1
+        #2 - Black = 123
+        #3 - Test = 2
 
-// Generated Code. Do not edit!
-enum class Type : uint16_t
-{
-    Something = 1,
-    Foobar = 2,
-}
+Enum #2 - Type:
+    Alignment: word
+    Values:
+        #1 - Something = 1
+        #2 - Foobar = 2
 
-// Generated Code. Do not edit!
-struct Head
-{
-    uint8_t id;
-    uint16_t size;
-    boost::optional<uint32_t> crc;
-}
+--------------------------------------------------
 
-// Generated Code. Do not edit!
-struct Complex
-{
-    Color color;
-    Type type;
-}
+Data #1 - Head:
+    Attributes:
+    #1 - uint8, id
+    #2 - uint16, size
+    #3 - optional, uint32, crc
 
-// Generated Code. Do not edit!
-struct TheMessage : public flatmessage::message
-{
-    Head head;
-    std::vector<std::array<Complex, 2>> complex;
-}
+Data #2 - Complex:
+    Attributes:
+    #1 - Color, color
+    #2 - Type, type
+
+--------------------------------------------------
+
+Message #1 - TheMessage:
+    Attributes:
+    #1 - Head, head
+    #2 - repeated, Complex, 2, complex
