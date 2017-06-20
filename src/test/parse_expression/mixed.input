@@ -1,3 +1,10 @@
+module Playground.Net.PlayerInteraction;
+
+import Playground.Net.Base;
+import Playground.Net.CommonTypes;
+
+protocol PlayerInteraction;
+
 enum Color : byte
 {
     Red = 1,
@@ -5,10 +12,34 @@ enum Color : byte
     Blue = 3,
 }
 
-message SetColor
+data PlayerUpdateBody
 {
-    uint8 id;
-    uint32 messageLength;
-    uint32 crc;
-    Color color;
+	Vector3d position;
+	float orientation;
+}
+
+message PlayerUpdateDirection
+{
+	Head head;
+	PlayerUpdateBody body;
+	Vector2d direction;
+}
+
+message PlayerUpdateVelocity
+{
+	Head head;
+	PlayerUpdateBody body;
+	float velocity;
+}
+
+message PlayerJumpStart
+{
+	Head head;
+	PlayerUpdateBody body;
+}
+
+message PlayerJumpEnd
+{
+	Head head;
+	PlayerUpdateBody body;
 }
