@@ -1,0 +1,4 @@
+In file <%.*?bad_protocol_missing_identifier.input%>, line 1:
+Error! Expecting identifier here:
+protocol ;
+_________^_

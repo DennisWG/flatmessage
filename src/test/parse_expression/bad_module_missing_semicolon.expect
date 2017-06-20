@@ -1,0 +1,4 @@
+In file <%.*?bad_module_missing_semicolon.input%>, line 1:
+Error! Expecting ';' here:
+module Oh.No.Im.Missing.My.Semicolon
+____________________________________^_

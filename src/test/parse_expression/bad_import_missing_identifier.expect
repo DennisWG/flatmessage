@@ -1,0 +1,4 @@
+In file <%.*?bad_import_missing_identifier.input%>, line 1:
+Error! Expecting identifier here:
+import ;
+_______^_

@@ -52,6 +52,7 @@ namespace flatmessage
             id_map["enum_size"] = "byte, word, dword or qword";
             id_map["multiplicative_expr"] = "Expression";
             id_map["enum_value_vector"] = "one or more values";
+            id_map["module_identifier"] = "identifier";
         }
 
         template <typename Iterator, typename Exception, typename Context>

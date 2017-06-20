@@ -1,0 +1,4 @@
+In file <%.*?bad_module_missing_identifier.input%>, line 1:
+Error! Expecting identifier here:
+module ;
+_______^_

@@ -99,6 +99,9 @@ struct template_generator_impl
     void operator()(flatmessage::ast::enumeration const& enumeration);
     void operator()(flatmessage::ast::message const& message);
     void operator()(flatmessage::ast::data const& data);
+    void operator()(flatmessage::ast::module_decl const& module_decl);
+    void operator()(flatmessage::ast::import_decl const& import_decl);
+    void operator()(flatmessage::ast::protocol_decl const& protocol_decl);
 
     std::ostream& out;
 
@@ -149,4 +152,16 @@ void template_generator_impl::operator()(flatmessage::ast::message const& messag
 void template_generator_impl::operator()(flatmessage::ast::data const& data)
 {
     this->data.push_back(data);
+}
+
+void template_generator_impl::operator()(flatmessage::ast::module_decl const& module_decl)
+{
+}
+
+void template_generator_impl::operator()(flatmessage::ast::import_decl const& import_decl)
+{
+}
+
+void template_generator_impl::operator()(flatmessage::ast::protocol_decl const& protocol_decl)
+{
 }

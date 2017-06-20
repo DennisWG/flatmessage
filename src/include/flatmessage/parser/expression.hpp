@@ -28,15 +28,25 @@ namespace flatmessage
         struct data_class;
         struct message_class;
         struct enumeration_class;
+        struct module_decl_class;
+        struct import_decl_class;
+        struct protocol_decl_class;
 
         using data_type = x3::rule<data_class, ast::data>;
         using message_type = x3::rule<message_class, ast::message>;
         using enumeration_type = x3::rule<enumeration_class, ast::enumeration>;
+        using module_decl_type = x3::rule<module_decl_class, ast::module_decl>;
+        using import_decl_type = x3::rule<import_decl_class, ast::import_decl>;
+        using protocol_decl_type = x3::rule<protocol_decl_class, ast::protocol_decl>;
 
-        BOOST_SPIRIT_DECLARE(data_type, message_type, enumeration_type);
+        BOOST_SPIRIT_DECLARE(data_type, message_type, enumeration_type, module_decl_type, import_decl_type,
+                             protocol_decl_type);
     }
 
     parser::data_type const& data();
     parser::message_type const& message();
     parser::enumeration_type const& enumeration();
+    parser::module_decl_type const& module_decl();
+    parser::import_decl_type const& import_decl();
+    parser::protocol_decl_type const& protocol_decl();
 }

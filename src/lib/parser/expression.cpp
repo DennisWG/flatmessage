@@ -24,5 +24,8 @@ namespace flatmessage
         BOOST_SPIRIT_INSTANTIATE(data_type, iterator_type, context_type);
         BOOST_SPIRIT_INSTANTIATE(message_type, iterator_type, context_type);
         BOOST_SPIRIT_INSTANTIATE(enumeration_type, iterator_type, context_type);
+        BOOST_SPIRIT_INSTANTIATE(module_decl_type, iterator_type, context_type);
+        BOOST_SPIRIT_INSTANTIATE(import_decl_type, iterator_type, context_type);
+        BOOST_SPIRIT_INSTANTIATE(protocol_decl_type, iterator_type, context_type);
     }
 }

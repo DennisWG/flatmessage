@@ -50,8 +50,9 @@ auto parse = [](std::string const& source, fs::path inputPath) {
     std::stringstream out;
     error_handler_type error_handler(iter, end, out, inputPath.string());
 
-    auto const parser = with<flatmessage::parser::error_handler_tag>(
-        std::ref(error_handler))[+(flatmessage::message() | flatmessage::enumeration() | flatmessage::data())];
+    auto const parser = with<flatmessage::parser::error_handler_tag>(std::ref(
+        error_handler))[+(flatmessage::message() | flatmessage::enumeration() | flatmessage::data()
+                          | flatmessage::module_decl() | flatmessage::import_decl() | flatmessage::protocol_decl())];
 
     using result_type = flatmessage::ast::ast;
 
@@ -74,7 +75,7 @@ DEF_TEST(ParseInputFiles, parse_expression)
     auto compare
         = [](fs::path inputPath, fs::path expectPath) { return testing::compare(inputPath, expectPath, parse); };
 
-    auto path = fs::current_path() / "parse_expression";
+    auto path = fs::current_path() / "../parse_expression";
 
     bool success = true;
 

@@ -30,6 +30,9 @@ namespace flatmessage
             void operator()(attribute const& attribute);
             void operator()(message const& message);
             void operator()(data const& data);
+            void operator()(module_decl const& module_decl);
+            void operator()(import_decl const& import_decl);
+            void operator()(protocol_decl const& protocol_decl);
 
             std::ostream& out;
         };
@@ -50,7 +53,7 @@ namespace flatmessage
 
             for (auto const& value : enumeration.values)
                 (*this)(value);
-            out << std::endl;
+            out << '\n';
         }
 
         void flatmessage::ast::visitor::operator()(attribute const& attribute)
@@ -75,7 +78,7 @@ namespace flatmessage
             for (auto const& attribute : message.attributes)
                 (*this)(attribute);
 
-            out << std::endl;
+            out << '\n';
         }
 
         void flatmessage::ast::visitor::operator()(data const& data)
@@ -85,7 +88,22 @@ namespace flatmessage
             for (auto const& attribute : data.attributes)
                 (*this)(attribute);
 
-            out << std::endl;
+            out << '\n';
+        }
+
+        void flatmessage::ast::visitor::operator()(module_decl const& module_decl)
+        {
+            out << "module " << module_decl.name << '\n';
+        }
+
+        void flatmessage::ast::visitor::operator()(import_decl const& import_decl)
+        {
+            out << "import " << import_decl.name << '\n';
+        }
+
+        void flatmessage::ast::visitor::operator()(protocol_decl const& protocol_decl)
+        {
+            out << "protocol " << protocol_decl.name << '\n';
         }
 
         void print(std::ostream& out, ast const& ast)

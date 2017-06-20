@@ -70,7 +70,22 @@ namespace flatmessage
             int value;
         };
 
-        using ast = std::vector<boost::variant<message, enumeration, data>>;
+        struct module_decl : x3::position_tagged
+        {
+            std::string name;
+        };
+
+        struct import_decl : x3::position_tagged
+        {
+            std::string name;
+        };
+
+        struct protocol_decl : x3::position_tagged
+        {
+            std::string name;
+        };
+
+        using ast = std::vector<boost::variant<message, enumeration, data, module_decl, import_decl, protocol_decl>>;
 
         // print functions for debugging
         inline std::ostream& operator<<(std::ostream& out, nil)

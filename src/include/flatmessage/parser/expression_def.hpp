@@ -53,6 +53,9 @@ namespace flatmessage
         specifier_type const specifier = "specifier";
         enumeration_type const enumeration = "enum";
         enum_value_type const enum_value = "enum_value";
+        module_decl_type const module_decl = "module";
+        import_decl_type const import_decl = "import";
+        protocol_decl_type const protocol_decl = "protocol";
 
         auto const attribute_vector
             = x3::rule<struct attribute_vector_class, std::vector<ast::attribute>>("attribute_vector") = +attribute;
@@ -77,7 +80,17 @@ namespace flatmessage
 
         auto const enum_value_def = identifier > '=' > number > ',';
 
-        BOOST_SPIRIT_DEFINE(data, message, attribute, specifier, enumeration, enum_value);
+        auto const module_identifier = x3::rule<struct module_identifier_class, std::string>("module_identifier")
+            = raw[lexeme[(alpha | '_') >> *(alnum | '_' | '.')]];
+
+        auto const module_decl_def = lit("module") > module_identifier > ';';
+
+        auto const import_decl_def = lit("import") > module_identifier > ';';
+
+        auto const protocol_decl_def = lit("protocol") > identifier > ';';
+
+        BOOST_SPIRIT_DEFINE(data, message, attribute, specifier, enumeration, enum_value, module_decl, import_decl,
+                            protocol_decl);
 
         struct data_class : annotation_base, error_handler_base
         {
@@ -97,6 +110,15 @@ namespace flatmessage
         struct enum_value_class : annotation_base
         {
         };
+        struct module_decl_class : annotation_base, error_handler_base
+        {
+        };
+        struct import_decl_class : annotation_base, error_handler_base
+        {
+        };
+        struct protocol_decl_class : annotation_base, error_handler_base
+        {
+        };
     }
 }
 
@@ -105,4 +127,7 @@ namespace flatmessage
     parser::data_type const& data() { return parser::data; }
     parser::message_type const& message() { return parser::message; }
     parser::enumeration_type const& enumeration() { return parser::enumeration; }
+    parser::module_decl_type const& module_decl() { return parser::module_decl; }
+    parser::import_decl_type const& import_decl() { return parser::import_decl; }
+    parser::protocol_decl_type const& protocol_decl() { return parser::protocol_decl; }
 }

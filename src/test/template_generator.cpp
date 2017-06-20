@@ -78,7 +78,7 @@ DEF_TEST(GenerateInputFiles, template_generator)
         return testing::compare(inputPath, expectPath, template_generate);
     };
 
-    auto path = fs::current_path() / "generate_expression";
+    auto path = fs::current_path() / "../generate_expression";
     std::cout << path << '\n';
 
     bool success = true;
