@@ -17,6 +17,9 @@ include_directories("${PROJECT_SOURCE_DIR}/contrib/lua-5.3.4/src")
 
 include_directories("${PROJECT_SOURCE_DIR}/contrib/sol2/single/sol")
 
+add_definitions(-DFMT_HEADER_ONLY)
+include_directories("${PROJECT_SOURCE_DIR}/contrib/fmt")
+
 # Testing
 include(CTest)
 enable_testing()
