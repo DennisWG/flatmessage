@@ -1,0 +1,14 @@
+module Playground.Net.CommonTypes;
+
+data Vector2d
+{
+    float x;
+    float y;
+}
+
+data Vector3d
+{
+    float x;
+    float y;
+    float z;
+}
