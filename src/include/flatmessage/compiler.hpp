@@ -35,6 +35,10 @@ namespace flatmessage
     {
         // The amount of threads used for compilation
         int num_threads = 1;
+        // The path where to write the output files to
+        boost::filesystem::path output_path;
+        // The file extension of that the output files
+        std::string file_extension;
     };
 
     // Handles compilation of file_template_pairs

@@ -35,6 +35,8 @@ namespace flatmessage
     {
         // Where is the file stored and what is it called
         fs::path file_path;
+        // Where is the template file stored that goes with this translation unit
+        fs::path template_path;
         // The AST representing the content
         flatmessage::ast::ast ast;
         // The module this translation unit is a part of
@@ -220,6 +222,7 @@ namespace flatmessage
                 auto ast = parse_one(entry.input_file);
                 translation_unit tu{ast};
                 tu.file_path = entry.input_file;
+                tu.template_path = entry.template_file;
 
                 translation_units.emplace_back(std::move(tu));
             }
@@ -271,13 +274,38 @@ namespace flatmessage
 
             return true;
         }
+
+        // Generates the code
+        void generate_code(std::vector<translation_unit> const& translation_units, fs::path const& output_path,
+                           std::string const& file_extension)
+        {
+            // TODO: implement threading
+            for (auto& translation_unit : translation_units)
+            {
+                auto file_name = translation_unit.file_path.stem();
+                boost::filesystem::path out_file_path
+                    = fmt::format("{0}/{1}.{2}", output_path.string(), file_name.string(), file_extension);
+
+                if (!boost::filesystem::exists(out_file_path.parent_path()))
+                    boost::filesystem::create_directory(out_file_path.parent_path());
+
+                std::ofstream out_file(out_file_path.c_str());
+
+                flatmessage::generator::template_generator generator(translation_unit.template_path.string());
+                generator.generate(out_file, translation_unit.ast);
+            }
+        }
     };
 
     void compiler::compile_files(std::vector<file_template_pair> const& files, compiler_options const& options)
     {
         compiler_impl impl;
+
         auto translation_units = impl.parse_files(files, options.num_threads);
+
         if (!impl.semantic_analyze(translation_units))
             return;
+
+        impl.generate_code(translation_units, options.output_path, options.file_extension);
     }
 }

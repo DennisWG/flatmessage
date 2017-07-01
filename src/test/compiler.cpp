@@ -21,13 +21,14 @@ limitations under the License.
 DEF_TEST(compile_single, compiler)
 {
     flatmessage::compiler compiler;
-    flatmessage::compiler_options options;
+
+    flatmessage::compiler_options options{1, "Z:\\tmp\\playground", "hpp"};
 
     boost::filesystem::path const path = "E:\\Programmieren\\C++\\playground\\src\\test\\compiler_expression\\";
 
-    compiler.compile_files({{path / "PlayerInteraction.input", path / "PlayerInteraction.template"},
-                            {path / "Base.input", path / "Base.template"},
-                            {path / "CommonTypes.input", path / "CommonTypes.template"}},
+    compiler.compile_files({{path / "PlayerInteraction.input", path / "cpp.template"},
+                            {path / "Base.input", path / "cpp.template"},
+                            {path / "CommonTypes.input", path / "cpp.template"}},
                            options);
 
     return true;
