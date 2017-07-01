@@ -78,6 +78,18 @@ struct template_generator_impl
             "name", sol::readonly(&data::name),
             "attributes", sol::readonly(&data::attributes)
             );
+
+        lua.new_usertype<flatmessage::ast::module_decl>("module",
+            "name", sol::readonly(&module_decl::name)
+            );
+
+        lua.new_usertype<flatmessage::ast::import_decl>("import",
+            "name", sol::readonly(&import_decl::name)
+            );
+
+        lua.new_usertype<flatmessage::ast::protocol_decl>("protocol",
+            "name", sol::readonly(&protocol_decl::name)
+            );
         // clang-format on
     }
 
@@ -88,6 +100,9 @@ struct template_generator_impl
         lua["enums"] = enums;
         lua["data"] = data;
         lua["messages"] = messages;
+        lua["module"] = module;
+        lua["imports"] = imports;
+        lua["protocol"] = protocol;
 
         lua.create_named_table("includes");
 
@@ -108,6 +123,9 @@ struct template_generator_impl
     std::vector<flatmessage::ast::enumeration> enums;
     std::vector<flatmessage::ast::message> messages;
     std::vector<flatmessage::ast::data> data;
+    flatmessage::ast::module_decl module;
+    std::vector<flatmessage::ast::import_decl> imports;
+    flatmessage::ast::protocol_decl protocol;
 
     sol::state lua;
 };
@@ -156,12 +174,15 @@ void template_generator_impl::operator()(flatmessage::ast::data const& data)
 
 void template_generator_impl::operator()(flatmessage::ast::module_decl const& module_decl)
 {
+    module = module_decl;
 }
 
 void template_generator_impl::operator()(flatmessage::ast::import_decl const& import_decl)
 {
+    imports.push_back(import_decl);
 }
 
 void template_generator_impl::operator()(flatmessage::ast::protocol_decl const& protocol_decl)
 {
+    protocol = protocol_decl;
 }
