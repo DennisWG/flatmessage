@@ -22,13 +22,13 @@ DEF_TEST(compile_single, compiler)
 {
     flatmessage::compiler compiler;
 
-    flatmessage::compiler_options options{1, "E:\\tmp\\playground"};
+    flatmessage::compiler_options options{1, "Z:\\tmp\\playground", "hpp"};
 
     boost::filesystem::path const path = "E:\\Programmieren\\C++\\playground\\src\\test\\compiler_expression\\";
 
-    compiler.compile_files({{path / "PlayerInteraction.input", path / "hpp.template", "hpp" },
-                            {path / "Base.input", path / "hpp.template", "hpp" },
-                            {path / "CommonTypes.input", path / "hpp.template", "hpp" }},
+    compiler.compile_files({{path / "PlayerInteraction.input", path / "cpp.template"},
+                            {path / "Base.input", path / "cpp.template"},
+                            {path / "CommonTypes.input", path / "cpp.template"}},
                            options);
 
     return true;
