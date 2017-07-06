@@ -49,6 +49,8 @@ namespace flatmessage
         std::vector<std::string> exported_types;
         // A list of 'data' structures that the translatio unit imports from other modules
         std::vector<std::string> imported_types;
+        // The file extension of the output file
+        std::string file_extension;
 
         translation_unit() = default;
         translation_unit(flatmessage::ast::ast const& ast) : ast(ast)
@@ -211,8 +213,7 @@ namespace flatmessage
         // Parses the given list of files using the given amount of threads and returns the list of parsed translation
         // units
         // TODO: implement threading
-        std::vector<translation_unit> parse_files(std::vector<flatmessage::file_template_pair> const& files,
-                                                  int num_threads)
+        std::vector<translation_unit> parse_files(std::vector<flatmessage::input_file_info> const& files, int num_threads)
         {
             std::vector<translation_unit> translation_units;
 
@@ -223,6 +224,7 @@ namespace flatmessage
                 translation_unit tu{ast};
                 tu.file_path = entry.input_file;
                 tu.template_path = entry.template_file;
+                tu.file_extension = entry.file_extension;
 
                 translation_units.emplace_back(std::move(tu));
             }
@@ -276,15 +278,14 @@ namespace flatmessage
         }
 
         // Generates the code
-        void generate_code(std::vector<translation_unit> const& translation_units, fs::path const& output_path,
-                           std::string const& file_extension)
+        void generate_code(std::vector<translation_unit> const& translation_units, fs::path const& output_path)
         {
             // TODO: implement threading
             for (auto& translation_unit : translation_units)
             {
                 auto file_name = translation_unit.file_path.stem();
-                boost::filesystem::path out_file_path
-                    = fmt::format("{0}/{1}.{2}", output_path.string(), file_name.string(), file_extension);
+                boost::filesystem::path out_file_path = fmt::format(
+                    "{0}/{1}.{2}", output_path.string(), file_name.string(), translation_unit.file_extension);
 
                 if (!boost::filesystem::exists(out_file_path.parent_path()))
                     boost::filesystem::create_directory(out_file_path.parent_path());
@@ -297,7 +298,7 @@ namespace flatmessage
         }
     };
 
-    void compiler::compile_files(std::vector<file_template_pair> const& files, compiler_options const& options)
+    void compiler::compile_files(std::vector<input_file_info> const& files, compiler_options const& options)
     {
         compiler_impl impl;
 
@@ -306,6 +307,6 @@ namespace flatmessage
         if (!impl.semantic_analyze(translation_units))
             return;
 
-        impl.generate_code(translation_units, options.output_path, options.file_extension);
+        impl.generate_code(translation_units, options.output_path);
     }
 }

@@ -21,13 +21,15 @@ limitations under the License.
 
 namespace flatmessage
 {
-    // Stores the path to input files and their corresponding template files used by the compiler
-    struct file_template_pair
+    // Stores information regarding the files used by the compiler
+    struct input_file_info
     {
         // Full path to the file describing the content
         boost::filesystem::path input_file;
         // Full path to the file describing the output
         boost::filesystem::path template_file;
+        // The file extension of the output file
+        std::string file_extension;
     };
 
     // A set of options to configure the compiler's behaviour
@@ -37,8 +39,6 @@ namespace flatmessage
         int num_threads = 1;
         // The path where to write the output files to
         boost::filesystem::path output_path;
-        // The file extension of that the output files
-        std::string file_extension;
     };
 
     // Handles compilation of file_template_pairs
@@ -46,6 +46,6 @@ namespace flatmessage
     {
       public:
         // Compiles the given list of file_template_pairs with the given compiler_options
-        void compile_files(std::vector<file_template_pair> const& files, compiler_options const& options);
+        void compile_files(std::vector<input_file_info> const& files, compiler_options const& options);
     };
 }
