@@ -80,7 +80,7 @@ bool test_one(fs::path file_name, std::string const& extension)
 
     auto result = test::compare(output, expected);
 
-    // adopted from
+    // adapted from
     // https://github.com/boostorg/spirit/blob/db1f83544370405c3621bee0f040c905d76e3fc6/include/boost/spirit/home/x3/support/utility/testing.hpp#L234
     if (!result.full_match)
     {
