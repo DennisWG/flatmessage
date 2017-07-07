@@ -1,57 +1,50 @@
-{%
-cppTypes = {
-    byte = "uint8_t",
-    uint8 = "uint8_t",
-    int8 = "int8_t",
-    word = "uint16_t",
-    uint16 = "uint16_t",
-    int16 = "int16_t",
-    dword = "uint32_t",
-    uint32 = "uint32_t",
-    int32 = "int32_t",
-    qword = "uint64_t",
-    uint64 = "uint64_t",
-    int64 = "int64_t",
-    string = "std::string",
-}
+{% 
+function writeEncoder(data, type) %}
+{{type}}& operator<<({{type}}& encoder, const {{data.name}}& data)
+{ {%
+    for _, attribute in pairs(data.attributes) do
+        %}{{string.format("\n    encoder << data.%s;", attribute.name)}}{%
+    end
 %}
-{% function writeType(attribute) 
-    if cppTypes[attribute.type] then %}{{cppTypes[attribute.type]}}{% else %}{{attribute.type}}{% end
+    return encoder;
+}
+{%
+end
+
+function writeDecoder(data, type) %}
+{{type}}& operator>>({{type}}& decoder, const {{data.name}}& data)
+{ {%
+    for _, attribute in pairs(data.attributes) do
+        %}{{string.format("\n    decoder >> data.%s;", attribute.name)}}{%
+    end
+%}
+    return decoder;
+}
+{%
+end
+
+function getNamespace()
+    local namespace, file = module.name:match('(.*)%.(.*)')
+    return namespace:gsub("%.", "::");
+end
+
+function printIncludeHpp()
+    local namespace, file = module.name:match('(.*)%.(.*)')
+    %}{{file}}{%
+end
+
+%}#include "{% printIncludeHpp() %}.hpp"
+#include <flatmessage.hpp>
+
+using namespace {{getNamespace()}};
+{%
+for _,data in pairs(data) do 
+    writeEncoder(data, "BinaryEncoder")
+    writeDecoder(data, "BinaryDecoder")
 end 
 
-function writeArray(attribute) %}
-std::array<{% writeType(attribute) %}, {{attribute.arraySize.value}}>{%
+for _,msg in pairs(messages) do
+    writeEncoder(msg, "BinaryEncoder")
+    writeDecoder(msg, "BinaryDecoder")
 end
-
-function doSpecifier(name, attribute) %}
-{{name}}<{% if attribute.arraySize.isset then writeArray(attribute) else writeType(attribute) end %}>{%
-end
-
-function writeSpecifier(specifier, attribute)
-    if specifier.value == "repeated" then 
-        doSpecifier("std::vector", attribute)
-    elseif specifier.value == "optional" then
-        doSpecifier("boost::optional", attribute)
-    end %}
- {{attribute.name}}{% 
-end
-
-function writeAttribute(attribute)
-    if attribute.specifier.isset then
-        writeSpecifier(attribute.specifier, attribute)
-    else writeType(attribute)
-%} {{attribute.name}}{% 
-    end
-end
-
-for _,data in pairs(data) do %}
-// Generated Code. Do not edit!
-struct {{data.name}}
-{
-{% for _, attribute in pairs(data.attributes) do %}
-    {% writeAttribute(attribute); %};
-
-{% end %}
-};
-
-{% end %}
+%}

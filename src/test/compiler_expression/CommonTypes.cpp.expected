@@ -1,0 +1,34 @@
+#include "CommonTypes.hpp"
+#include <flatmessage.hpp>
+
+using namespace Playground::Net;
+
+BinaryEncoder& operator<<(BinaryEncoder& encoder, const Vector2d& data)
+{ 
+    encoder << data.x;
+    encoder << data.y;
+    return encoder;
+}
+
+BinaryDecoder& operator>>(BinaryDecoder& decoder, const Vector2d& data)
+{ 
+    decoder >> data.x;
+    decoder >> data.y;
+    return decoder;
+}
+
+BinaryEncoder& operator<<(BinaryEncoder& encoder, const Vector3d& data)
+{ 
+    encoder << data.x;
+    encoder << data.y;
+    encoder << data.z;
+    return encoder;
+}
+
+BinaryDecoder& operator>>(BinaryDecoder& decoder, const Vector3d& data)
+{ 
+    decoder >> data.x;
+    decoder >> data.y;
+    decoder >> data.z;
+    return decoder;
+}

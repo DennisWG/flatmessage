@@ -1,0 +1,46 @@
+#include "Base.hpp"
+#include "CommonTypes.hpp"
+
+namespace Playground::Net
+{
+#pragma pack(push, 1)
+
+    struct PlayerUpdateBody
+    {
+    public:
+        Vector3d position;
+        float orientation;
+    };
+
+    class PlayerUpdateDirection
+    {
+    public:
+        Head head;
+        PlayerUpdateBody body;
+        Vector2d direction;
+    };
+
+    class PlayerUpdateVelocity
+    {
+    public:
+        Head head;
+        PlayerUpdateBody body;
+        float velocity;
+    };
+
+    class PlayerJumpStart
+    {
+    public:
+        Head head;
+        PlayerUpdateBody body;
+    };
+
+    class PlayerJumpEnd
+    {
+    public:
+        Head head;
+        PlayerUpdateBody body;
+    };
+
+#pragma pop
+}

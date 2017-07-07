@@ -1,0 +1,22 @@
+
+namespace Playground::Net
+{
+#pragma pack(push, 1)
+
+    struct Vector2d
+    {
+    public:
+        float x;
+        float y;
+    };
+
+    struct Vector3d
+    {
+    public:
+        float x;
+        float y;
+        float z;
+    };
+
+#pragma pop
+}

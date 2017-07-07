@@ -1,0 +1,20 @@
+#include "Base.hpp"
+#include <flatmessage.hpp>
+
+using namespace Playground::Net;
+
+BinaryEncoder& operator<<(BinaryEncoder& encoder, const Head& data)
+{ 
+    encoder << data.code;
+    encoder << data.size;
+    encoder << data.crc;
+    return encoder;
+}
+
+BinaryDecoder& operator>>(BinaryDecoder& decoder, const Head& data)
+{ 
+    decoder >> data.code;
+    decoder >> data.size;
+    decoder >> data.crc;
+    return decoder;
+}

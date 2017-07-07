@@ -1,0 +1,94 @@
+{%
+cppTypes = {
+    byte = "uint8_t",
+    uint8 = "uint8_t",
+    int8 = "int8_t",
+    word = "uint16_t",
+    uint16 = "uint16_t",
+    int16 = "int16_t",
+    dword = "uint32_t",
+    uint32 = "uint32_t",
+    int32 = "int32_t",
+    qword = "uint64_t",
+    uint64 = "uint64_t",
+    int64 = "int64_t",
+    string = "std::string",
+}
+
+function extractNamespaceAndFile(string)
+    local namespace, file = string:match('(.*)%.(.*)')
+    return namespace, file
+end
+
+function writeNamespace()
+    local namespace, file = extractNamespaceAndFile(module.name)
+    namespace = namespace:gsub("%.", "::")
+    %}namespace {{namespace}}{%
+end
+
+function writeInclude(import)
+    local namespace, file = extractNamespaceAndFile(import.name)
+    %}#include "{{file}}.hpp"{{"\n"}}{%
+end
+
+function writeType(attribute)
+    if cppTypes[attribute.type] then %}{{cppTypes[attribute.type]}}{% else %}{{attribute.type}}{% end
+end
+
+function writeArray(attribute)
+    %}std::array<{% writeType(attribute) %}, {{attribute.arraySize.value}}>{%
+end
+
+function doSpecifier(name, attribute)
+    %}{{name}}<{% if attribute.arraySize.isset then writeArray(attribute) else writeType(attribute) end %}> {%
+end
+
+function writeSpecifier(specifier, attribute)
+    if specifier.value == "repeated" then
+        doSpecifier("std::vector", attribute)
+    elseif specifier.value == "optional" then
+        doSpecifier("boost::optional", attribute)
+    end
+    %}{{attribute.name}}{%
+end
+
+function writeAttribute(attribute)
+    %}{{"\n        "}}{%
+    if attribute.specifier.isset then
+        writeSpecifier(attribute.specifier, attribute)
+    else writeType(attribute)
+        %} {{attribute.name}}{%
+    end
+    %};{%
+end
+
+function writePublic()
+    %}{{"\n    public:"}}{%
+end
+
+function writeDataStructure(type, name, attributes)
+    %}{{string.format("\n    %s %s\n    {", type, name)}}{%
+    writePublic();
+    for _, attribute in pairs(attributes) do
+        writeAttribute(attribute)
+    end
+    %}{{"\n    };\n"}}{%
+end
+
+for _,import in pairs(imports) do
+    writeInclude(import)
+end
+%}
+{% writeNamespace() %}
+{
+#pragma pack(push, 1)
+{%
+for _,data in pairs(data) do
+    writeDataStructure("struct", data.name, data.attributes)
+end
+for _,msg in pairs(messages) do
+    writeDataStructure("class", msg.name, msg.attributes)
+end
+%}
+#pragma pop
+}

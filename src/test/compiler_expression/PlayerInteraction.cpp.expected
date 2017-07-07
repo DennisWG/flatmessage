@@ -1,0 +1,78 @@
+#include "PlayerInteraction.hpp"
+#include <flatmessage.hpp>
+
+using namespace Playground::Net;
+
+BinaryEncoder& operator<<(BinaryEncoder& encoder, const PlayerUpdateBody& data)
+{ 
+    encoder << data.position;
+    encoder << data.orientation;
+    return encoder;
+}
+
+BinaryDecoder& operator>>(BinaryDecoder& decoder, const PlayerUpdateBody& data)
+{ 
+    decoder >> data.position;
+    decoder >> data.orientation;
+    return decoder;
+}
+
+BinaryEncoder& operator<<(BinaryEncoder& encoder, const PlayerUpdateDirection& data)
+{ 
+    encoder << data.head;
+    encoder << data.body;
+    encoder << data.direction;
+    return encoder;
+}
+
+BinaryDecoder& operator>>(BinaryDecoder& decoder, const PlayerUpdateDirection& data)
+{ 
+    decoder >> data.head;
+    decoder >> data.body;
+    decoder >> data.direction;
+    return decoder;
+}
+
+BinaryEncoder& operator<<(BinaryEncoder& encoder, const PlayerUpdateVelocity& data)
+{ 
+    encoder << data.head;
+    encoder << data.body;
+    encoder << data.velocity;
+    return encoder;
+}
+
+BinaryDecoder& operator>>(BinaryDecoder& decoder, const PlayerUpdateVelocity& data)
+{ 
+    decoder >> data.head;
+    decoder >> data.body;
+    decoder >> data.velocity;
+    return decoder;
+}
+
+BinaryEncoder& operator<<(BinaryEncoder& encoder, const PlayerJumpStart& data)
+{ 
+    encoder << data.head;
+    encoder << data.body;
+    return encoder;
+}
+
+BinaryDecoder& operator>>(BinaryDecoder& decoder, const PlayerJumpStart& data)
+{ 
+    decoder >> data.head;
+    decoder >> data.body;
+    return decoder;
+}
+
+BinaryEncoder& operator<<(BinaryEncoder& encoder, const PlayerJumpEnd& data)
+{ 
+    encoder << data.head;
+    encoder << data.body;
+    return encoder;
+}
+
+BinaryDecoder& operator>>(BinaryDecoder& decoder, const PlayerJumpEnd& data)
+{ 
+    decoder >> data.head;
+    decoder >> data.body;
+    return decoder;
+}

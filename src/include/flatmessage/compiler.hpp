@@ -45,7 +45,8 @@ namespace flatmessage
     class compiler
     {
       public:
-        // Compiles the given list of file_template_pairs with the given compiler_options
-        void compile_files(std::vector<file_template_pair> const& files, compiler_options const& options);
+        // Compiles the given list of file_template_pairs with the given compiler_options and returns whether or not it
+        // succeeded
+        bool compile_files(std::vector<file_template_pair> const& files, compiler_options const& options);
     };
 }

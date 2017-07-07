@@ -1,0 +1,15 @@
+
+namespace Playground::Net
+{
+#pragma pack(push, 1)
+
+    struct Head
+    {
+    public:
+        uint8_t code;
+        uint16_t size;
+        boost::optional<uint32_t> crc;
+    };
+
+#pragma pop
+}

@@ -297,15 +297,16 @@ namespace flatmessage
         }
     };
 
-    void compiler::compile_files(std::vector<file_template_pair> const& files, compiler_options const& options)
+    bool compiler::compile_files(std::vector<file_template_pair> const& files, compiler_options const& options)
     {
         compiler_impl impl;
 
         auto translation_units = impl.parse_files(files, options.num_threads);
 
         if (!impl.semantic_analyze(translation_units))
-            return;
+            return false;
 
         impl.generate_code(translation_units, options.output_path, options.file_extension);
+        return true;
     }
 }
