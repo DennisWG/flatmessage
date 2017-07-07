@@ -116,13 +116,8 @@ function M._compile(tmpl, env)
             pos = pos+2
         elseif bracepercentpos then
             b = bracepercentpos
-            
-            -- Skip leading white spaces up to the first newline
+  
             local tmp = tmpl:sub(pos, b-1)
-            local a = tmpl:sub(pos-2, pos-1)
-            if a == "%}" then
-                tmp = tmp:gsub("\r?\n?[ ]*$", "")
-            end
             
             appender(builder, tmp)
             -- Find the end of the block.
@@ -134,14 +129,6 @@ function M._compile(tmpl, env)
             run_block(builder, tmpl:sub(b, pos+1))
             -- Skip back the }} (pos points to the start of }}).
             pos = pos+2
-            
-            -- Skip newline after block
-            local tmp = tmpl:sub(pos, pos)
-            if tmp == "\r" and tmpl:sub(pos+1, pos+1) == "\n" then
-                pos = pos + 2
-            elseif tmp == "\n" then
-                pos = pos + 1
-            end
         else
             break
         end

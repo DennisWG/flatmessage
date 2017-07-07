@@ -1,5 +1,13 @@
-{% msg = messages[1] values = msg.attributes n = #values %}
-{{msg.name}}
-{% for k,v in pairs(values) do %}
-    {% if v.specifier.isset then %}{{v.specifier.value}}, {% end %}{{v.type}}, {% if v.arraySize.isset then %}{{v.arraySize.value}}, {% end %}{{v.name}}
-{% end %}
+{% msg = messages[1] values = msg.attributes n = #values
+%}{{msg.name}}{%
+for k,v in pairs(values) do
+    %}{{"\n    "}}{%
+    if v.specifier.isset then
+        %}{{v.specifier.value}}, {%
+    end 
+    %}{{v.type}}, {%
+    if v.arraySize.isset then
+        %}{{v.arraySize.value}}, {%
+    end
+    %}{{v.name}}{%    
+end %}

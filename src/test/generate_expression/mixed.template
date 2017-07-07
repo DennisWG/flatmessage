@@ -1,29 +1,54 @@
-{% for i,enum in pairs(enums) do %}
-Enum #{{i}} - {{enum.name}}:
+{% for i,enum in pairs(enums) do
+%}Enum #{{i}} - {{enum.name}}:
     Alignment: {{enum.alignment}}
-    Values:
-{% for j,value in pairs(enum.values) do %}
-        #{{j}} - {{value.name}} = {{value.value}}
-{% end %}
+    Values:{%
+    for j,value in pairs(enum.values) do
+    %}
+        #{{j}} - {{value.name}} = {{value.value}}{%
+    end
+%}
 
-{% end %}
---------------------------------------------------
+{%
+end
+%}--------------------------------------------------
 
-{% for i,data in pairs(data) do %}
-Data #{{i}} - {{data.name}}:
-    Attributes:
-{% for j,v in pairs(data.attributes) do %}
-    #{{j}} - {% if v.specifier.isset then %}{{v.specifier.value}}, {% end %}{{v.type}}, {% if v.arraySize.isset then %}{{v.arraySize.value}}, {% end %}{{v.name}}
-{% end %}
+{%
+for i,data in pairs(data) do
+%}Data #{{i}} - {{data.name}}:
+    Attributes:{%
+    for j,v in pairs(data.attributes) do
+    %}
+    #{{j}} - {%
+        if v.specifier.isset then
+            %}{{v.specifier.value}}, {%
+        end
+        %}{{v.type}}, {%
+        if v.arraySize.isset then
+            %}{{v.arraySize.value}}, {%
+        end
+        %}{{v.name}}{%
+    end
+%}
 
-{% end %}
---------------------------------------------------
+{%
+end
+%}--------------------------------------------------
 
-{% for i,msg in pairs(messages) do %}
-Message #{{i}} - {{msg.name}}:
-    Attributes:
-{% for j,v in pairs(msg.attributes) do %}
-    #{{j}} - {% if v.specifier.isset then %}{{v.specifier.value}}, {% end %}{{v.type}}, {% if v.arraySize.isset then %}{{v.arraySize.value}}, {% end %}{{v.name}}
-{% end %}
+{%
+for i,msg in pairs(messages) do
+%}Message #{{i}} - {{msg.name}}:
+    Attributes:{%
+    for j,v in pairs(msg.attributes) do
+    %}
+    #{{j}} - {%
+            if v.specifier.isset then
+                %}{{v.specifier.value}}, {%
+            end
+        %}{{v.type}}, {%
+        if v.arraySize.isset then
+            %}{{v.arraySize.value}}, {%
+        end
+        %}{{v.name}}{%
+    end %}
 
 {% end %}
