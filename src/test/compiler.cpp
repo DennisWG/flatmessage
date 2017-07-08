@@ -16,16 +16,6 @@ limitations under the License.
 
 #include <testinator.h>
 
-// TODO: remove this hack once boost no longer uses this deprecated function
-namespace std
-{
-    template <class arg, class result> struct unary_function
-    {
-        typedef arg argument_type;
-        typedef result result_type;
-    };
-}
-
 #include <boost/range/iterator_range.hpp>
 #include <boost/spirit/home/x3/support/utility/testing.hpp>
 
