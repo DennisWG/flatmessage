@@ -134,11 +134,11 @@ namespace flatmessage
 {
     namespace generator
     {
-        template_generator::template_generator(std::string const& templateFilePath)
+        template_generator::template_generator(std::string const& template_file_path)
         {
-            std::ifstream file(templateFilePath);
+            std::ifstream file(template_file_path);
             if (!file)
-                throw std::exception{("Invalid file path \"" + templateFilePath + "\"").c_str()};
+                throw std::exception{("Invalid file path \"" + template_file_path + "\"").c_str()};
 
             _template = std::string{(std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>()};
         }

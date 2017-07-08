@@ -22,11 +22,14 @@ namespace flatmessage
 {
     namespace generator
     {
+        // A code generator that uses a template to generate code
         class template_generator : public generator
         {
           public:
-            template_generator(std::string const& templateFilePath);
-            bool generate(std::ostream& out, ast::ast const& ast) override;
+            // Constructs the template_generator by parsing the given template_file_path
+            template_generator(std::string const& template_file_path);
+            // Generates the code from the given ast and writes it into the given stream
+            bool generate(std::ostream& stream, ast::ast const& ast) override;
 
           private:
             std::string _template;
