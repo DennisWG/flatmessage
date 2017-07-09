@@ -16,7 +16,7 @@ limitations under the License.
 
 #pragma once
 
-#include "ast.hpp"
+#include <flatmessage/ast/ast.hpp>
 
 #include <boost/fusion/include/adapt_struct.hpp>
 
