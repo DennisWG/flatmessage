@@ -18,9 +18,7 @@ limitations under the License.
 
 #include <flatmessage/ast/printer.hpp>
 #include <flatmessage/generator/template_generator.hpp>
-#include <flatmessage/parser/config.hpp>
-#include <flatmessage/parser/error_handler.hpp>
-#include <flatmessage/parser/expression.hpp>
+#include <flatmessage/parser.hpp>
 
 #include <boost/spirit/home/x3/support/utility/testing.hpp>
 
@@ -28,38 +26,21 @@ namespace fs = boost::filesystem;
 namespace testing = boost::spirit::x3::testing;
 
 auto template_generate = [](std::string const& source, fs::path inputPath) {
-    using flatmessage::parser::error_handler_type;
-    using flatmessage::parser::iterator_type;
-    using boost::spirit::x3::with;
-    using boost::spirit::x3::ascii::space;
-
-    iterator_type iter(source.begin());
-    iterator_type end(source.end());
-
-    std::stringstream out;
-    error_handler_type error_handler(iter, end, out, inputPath.string());
-
     auto path = inputPath.parent_path();
     auto fileName = inputPath.stem().string() + ".template";
 
-    auto const parser = with<flatmessage::parser::error_handler_tag>(
-        std::ref(error_handler))[+(flatmessage::message() | flatmessage::enumeration() | flatmessage::data())];
-
-    using result_type = flatmessage::ast::ast;
-
-    result_type result;
-    bool success = flatmessage::x3::phrase_parse(iter, end, parser, space, result);
-
-    if (success)
+    std::string error_message;
+    auto ast = flatmessage::parser::parse_string(source, error_message, inputPath.string());
+    if (ast)
     {
-        if (iter != end)
-            return "Error! Expecting end of input here: " + std::string(iter, end) + '\n';
-
         flatmessage::generator::template_generator generator((path / fileName).string());
-        generator.generate(out, result);
+        std::stringstream out;
+
+        generator.generate(out, *ast);
+        return out.str();
     }
 
-    return out.str();
+    return error_message;
 };
 
 DEF_TEST(GenerateInputFiles, template_generator)
