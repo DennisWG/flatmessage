@@ -14,15 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include <flatmessage/ast/printer.hpp>
 #include <flatmessage/compiler.hpp>
+#include <flatmessage/parser.hpp>
 #include <flatmessage/generator/template_generator.hpp>
-#include <flatmessage/parser/config.hpp>
-#include <flatmessage/parser/error_handler.hpp>
-#include <flatmessage/parser/expression.hpp>
 
 #include <fmt/format.h>
 
+#include <iostream>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -121,45 +119,6 @@ namespace flatmessage
 
     class compiler_impl
     {
-        // Parses the file at the given file_path and returns an AST representing its content
-        flatmessage::ast::ast parse_one(fs::path const& file_path) const
-        {
-            using flatmessage::parser::error_handler_type;
-            using flatmessage::parser::iterator_type;
-            using boost::spirit::x3::with;
-            using boost::spirit::x3::ascii::space;
-
-            std::ifstream file(file_path.string());
-            if (!file)
-                throw std::exception{("Invalid file path \"" + file_path.string() + "\"").c_str()};
-
-            auto content = std::string{(std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>()};
-
-            iterator_type iter(content.begin());
-            iterator_type end(content.end());
-
-            std::stringstream out;
-            error_handler_type error_handler(iter, end, out, file_path.string());
-
-            auto const parser = with<flatmessage::parser::error_handler_tag>(std::ref(error_handler))[+(
-                flatmessage::message() | flatmessage::enumeration() | flatmessage::data() | flatmessage::module_decl()
-                | flatmessage::import_decl() | flatmessage::protocol_decl())];
-
-            using result_type = flatmessage::ast::ast;
-
-            result_type result;
-            bool success = flatmessage::x3::phrase_parse(iter, end, parser, space, result);
-
-            if (success)
-            {
-                if (iter != end)
-                    throw std::exception(
-                        ("Error! Expecting end of input here: " + std::string(iter, end) + '\n').c_str());
-            }
-
-            return result;
-        }
-
         // Returns true if the given translation_unit's module name hasn't been encountered yet or false
         bool ensure_unique_module_name(translation_unit const& translation_unit)
         {
@@ -200,7 +159,7 @@ namespace flatmessage
         // Displays the given error_message and some information about the given translation_unit to the standard output
         void error(translation_unit const& translation_unit, std::string const& error_message)
         {
-            std::cout << "Error while compiling file '" << translation_unit.file_path.string() << "':\n"
+            std::cerr << "Error while compiling file '" << translation_unit.file_path.string() << "':\n"
                       << error_message << "\n";
         }
 
@@ -219,8 +178,9 @@ namespace flatmessage
             // TODO: implement threading
             for (auto& entry : files)
             {
-                auto ast = parse_one(entry.input_file);
-                translation_unit tu{ast};
+                std::string error_message;
+                auto ast = parser::parse_file(entry.input_file, error_message);
+                translation_unit tu{*ast};
                 tu.file_path = entry.input_file;
                 tu.template_path = entry.template_file;
 

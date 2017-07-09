@@ -14,13 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include <testinator.h>
-
-#include <flatmessage/ast/ast.hpp>
 #include <flatmessage/ast/printer.hpp>
-#include <flatmessage/parser/config.hpp>
-#include <flatmessage/parser/error_handler.hpp>
-#include <flatmessage/parser/expression.hpp>
+#include <flatmessage/parser.hpp>
+
+#include <testinator.h>
 
 #include <boost/spirit/home/x3/support/utility/testing.hpp>
 #include <boost/variant.hpp>
@@ -29,35 +26,16 @@ namespace fs = boost::filesystem;
 namespace testing = boost::spirit::x3::testing;
 
 auto parse = [](std::string const& source, fs::path inputPath) {
-    using flatmessage::parser::error_handler_type;
-    using flatmessage::parser::iterator_type;
-    using boost::spirit::x3::with;
-    using boost::spirit::x3::ascii::space;
-
-    iterator_type iter(source.begin());
-    iterator_type end(source.end());
-
     std::stringstream out;
-    error_handler_type error_handler(iter, end, out, inputPath.string());
+    std::string error_message;
 
-    auto const parser = with<flatmessage::parser::error_handler_tag>(std::ref(
-        error_handler))[+(flatmessage::message() | flatmessage::enumeration() | flatmessage::data()
-                          | flatmessage::module_decl() | flatmessage::import_decl() | flatmessage::protocol_decl())];
-
-    using result_type = flatmessage::ast::ast;
-
-    result_type result;
-    bool success = flatmessage::x3::phrase_parse(iter, end, parser, space, result);
-
-    if (success)
+    if (auto ast = flatmessage::parser::parse_string(source, error_message, inputPath.string()))
     {
-        if (iter != end)
-            return "Error! Expecting end of input here: " + std::string(iter, end) + '\n';
-
-        flatmessage::ast::print(out, result);
+        flatmessage::ast::print(out, *ast);
+        return out.str();
     }
-
-    return out.str();
+    
+    return error_message;
 };
 
 DEF_TEST(ParseInputFiles, parse_expression)
