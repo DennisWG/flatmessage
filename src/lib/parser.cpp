@@ -2,9 +2,9 @@
 #include <flatmessage/compiler.hpp>
 #include <flatmessage/generator/template_generator.hpp>
 #include <flatmessage/parser.hpp>
-#include <flatmessage/parser/config.hpp>
-#include <flatmessage/parser/error_handler.hpp>
-#include <flatmessage/parser/expression.hpp>
+#include "parser/config.hpp"
+#include "parser/error_handler.hpp"
+#include "parser/expression.hpp"
 
 #include <boost/filesystem.hpp>
 

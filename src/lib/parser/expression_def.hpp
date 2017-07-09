@@ -16,8 +16,8 @@ limitations under the License.
 
 #pragma once
 
-#include "../ast/ast.hpp"
-#include "../ast/ast_adopted.hpp"
+#include <flatmessage/ast/ast.hpp>
+#include <flatmessage/ast/ast_adopted.hpp>
 #include "annotation.hpp"
 #include "common.hpp"
 #include "error_handler.hpp"

@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "../ast/ast.hpp"
+#include <flatmessage/ast/ast.hpp>
 #include "config.hpp"
 
 #include <boost/spirit/home/x3.hpp>
