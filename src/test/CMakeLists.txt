@@ -12,6 +12,11 @@ target_link_libraries(test_${PROJECT_NAME} ${Boost_LIBRARIES})
 
 target_include_directories(test_${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/contrib/testinator/src/include)
 
+target_compile_definitions(test_${PROJECT_NAME} 
+    PRIVATE FMT_HEADER_ONLY=1
+    _HAS_AUTO_PTR_ETC=1 # TODO: Remove once boost no longer uses std::unary_function
+)
+
 if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     include(VsDebugDir)
     SET_DEBUG_DIRECTORY(test_${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
@@ -22,6 +27,16 @@ endif()
 #    PROPERTIES
 #        VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 #)
+
+# TODO: Remove once Visual Studio uses CMake 3.8 or higher
+ if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")		
+    set(MY_CXX_FLAGS_LIST		
+        /std:c++latest		
+    )		
+    string(REPLACE ";" " " MY_CXX_FLAGS "${MY_CXX_FLAGS_LIST}")		
+ 		
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MY_CXX_FLAGS}")		
+ endif()
 
 include(Testinator)
 ADD_TESTINATOR_TESTS (test_${PROJECT_NAME})
