@@ -1,0 +1,17 @@
+{%
+    function dump(type_name, name)
+        %}{{type_name}}: {{name.."\n"}}{%
+    end
+    
+    for _,enum in pairs(enums) do
+        dump("enum", enum.name);
+    end
+    
+    for _,d in pairs(data) do
+        dump("data", d.name);
+    end
+    
+    for _,msg in pairs(messages) do
+        dump("message", msg.name);
+    end
+%}

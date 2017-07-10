@@ -30,6 +30,15 @@ namespace flatmessage
         boost::filesystem::path template_file;
     };
 
+    // A set of flags that alter the compilation process
+    enum class compiler_flags
+    {
+        // Just compile the normal way
+        none = 0,
+        // Parses the translation units as if they are in one big file
+        merge_translation_units = 1,
+    };
+
     // A set of options to configure the compiler's behaviour
     struct compiler_options
     {
@@ -39,6 +48,8 @@ namespace flatmessage
         boost::filesystem::path output_path;
         // The file extension of that the output files
         std::string file_extension;
+        // A set of flags that alter the compilation process
+        compiler_flags flags = compiler_flags::none;
     };
 
     // Handles compilation of file_template_pairs
@@ -49,4 +60,43 @@ namespace flatmessage
         // succeeded
         bool compile_files(std::vector<file_template_pair> const& files, compiler_options const& options);
     };
+
+    inline compiler_flags operator|(compiler_flags lhs, compiler_flags rhs)
+    {
+        using T = std::underlying_type_t<compiler_flags>;
+        return static_cast<compiler_flags>((static_cast<T>(lhs) | static_cast<T>(rhs)));
+    }
+
+    inline compiler_flags& operator|=(compiler_flags& lhs, compiler_flags rhs)
+    {
+        using T = std::underlying_type_t<compiler_flags>;
+        lhs = static_cast<compiler_flags>((static_cast<T>(lhs) | static_cast<T>(rhs)));
+        return lhs;
+    }
+
+    inline compiler_flags operator&(compiler_flags lhs, compiler_flags rhs)
+    {
+        using T = std::underlying_type_t<compiler_flags>;
+        return static_cast<compiler_flags>((static_cast<T>(lhs) & static_cast<T>(rhs)));
+    }
+
+    inline compiler_flags& operator&=(compiler_flags& lhs, compiler_flags rhs)
+    {
+        using T = std::underlying_type_t<compiler_flags>;
+        lhs = static_cast<compiler_flags>((static_cast<T>(lhs) & static_cast<T>(rhs)));
+        return lhs;
+    }
+
+    inline compiler_flags operator^(compiler_flags lhs, compiler_flags rhs)
+    {
+        using T = std::underlying_type_t<compiler_flags>;
+        return static_cast<compiler_flags>((static_cast<T>(lhs) ^ static_cast<T>(rhs)));
+    }
+
+    inline compiler_flags& operator^=(compiler_flags& lhs, compiler_flags rhs)
+    {
+        using T = std::underlying_type_t<compiler_flags>;
+        lhs = static_cast<compiler_flags>((static_cast<T>(lhs) ^ static_cast<T>(rhs)));
+        return lhs;
+    }
 }

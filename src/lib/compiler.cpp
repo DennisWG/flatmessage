@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 #include <flatmessage/compiler.hpp>
-#include <flatmessage/parser.hpp>
 #include <flatmessage/generator/template_generator.hpp>
+#include <flatmessage/parser.hpp>
 
 #include <fmt/format.h>
 
@@ -167,11 +167,10 @@ namespace flatmessage
         std::unordered_map<std::string, translation_unit> _modules;
 
       public:
-        // Parses the given list of files using the given amount of threads and returns the list of parsed translation
-        // units
+        // Parses the given list of files using the given options and returns the list of parsed translation units
         // TODO: implement threading
         std::vector<translation_unit> parse_files(std::vector<flatmessage::file_template_pair> const& files,
-                                                  int num_threads)
+                                                  compiler_options const& options)
         {
             std::vector<translation_unit> translation_units;
 
@@ -180,11 +179,22 @@ namespace flatmessage
             {
                 std::string error_message;
                 auto ast = parser::parse_file(entry.input_file, error_message);
-                translation_unit tu{*ast};
-                tu.file_path = entry.input_file;
-                tu.template_path = entry.template_file;
 
-                translation_units.emplace_back(std::move(tu));
+                using cf = compiler_flags;
+
+                if (translation_units.size() > 0
+                    && (options.flags & cf::merge_translation_units) == cf::merge_translation_units)
+                {
+                    translation_unit& tu = *translation_units.begin();
+                    tu.ast.insert(tu.ast.end(), ast->begin(), ast->end());
+                }
+                else
+                {
+                    translation_unit tu{*ast};
+                    tu.file_path = entry.input_file;
+                    tu.template_path = entry.template_file;
+                    translation_units.emplace_back(std::move(tu));
+                }
             }
 
             return translation_units;
@@ -257,11 +267,24 @@ namespace flatmessage
         }
     };
 
+    translation_unit merge_trnalsation_units(std::vector<translation_unit> const& tus)
+    {
+        translation_unit tu{*tus.begin()};
+
+        if (tus.size() == 1)
+            return tu;
+
+        for (auto itr = tus.begin() + 1; itr != tus.end(); ++itr)
+            tu.ast.insert(tu.ast.end(), itr->ast.begin(), itr->ast.end());
+
+        return tu;
+    }
+
     bool compiler::compile_files(std::vector<file_template_pair> const& files, compiler_options const& options)
     {
         compiler_impl impl;
 
-        auto translation_units = impl.parse_files(files, options.num_threads);
+        auto translation_units = impl.parse_files(files, options);
 
         if (!impl.semantic_analyze(translation_units))
             return false;

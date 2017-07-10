@@ -104,14 +104,15 @@ bool test_one(fs::path file_name, std::string const& extension)
 }
 
 // Ensures that the content of the compiled files of the given file_paths matches the expected content
-bool test_output(std::vector<fs::path> const& file_paths)
+bool test_output(std::vector<fs::path> const& file_paths, std::vector<std::string> const& file_extensions)
 {
     for (auto& path : file_paths)
     {
-        if (!test_one(path.stem(), "cpp"))
-            return false;
-        if (!test_one(path.stem(), "hpp"))
-            return false;
+        for (auto& extension : file_extensions)
+        {
+            if (!test_one(path.stem(), extension))
+                return false;
+        }
     }
 
     return true;
@@ -123,7 +124,19 @@ DEF_TEST(compile_many, compiler)
     EXPECT(compile_with(files, "cpp.template", {1, working_folder, "cpp"}));
     EXPECT(compile_with(files, "hpp.template", {1, working_folder, "hpp"}));
 
-    EXPECT(test_output(files));
+    EXPECT(test_output(files, {"cpp", "hpp"}));
+
+    return true;
+}
+
+DEF_TEST(compiler_merge_translation_units, compiler)
+{
+    using cf = flatmessage::compiler_flags;
+
+    auto files = get_test_files();
+    EXPECT(compile_with(files, "merged.template", {1, working_folder, "dmp", cf::merge_translation_units}));
+
+    EXPECT(test_one(*files.begin(), "dmp"));
 
     return true;
 }

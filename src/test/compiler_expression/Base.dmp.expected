@@ -1,0 +1,9 @@
+enum: Color
+data: Head
+data: Vector2d
+data: Vector3d
+data: PlayerUpdateBody
+message: PlayerUpdateDirection
+message: PlayerUpdateVelocity
+message: PlayerJumpStart
+message: PlayerJumpEnd
