@@ -57,6 +57,7 @@ namespace flatmessage
 
                 visitor()
                 {
+                    buildin_types.insert("char");
                     buildin_types.insert("byte");
                     buildin_types.insert("uint8");
                     buildin_types.insert("int8");
@@ -70,7 +71,16 @@ namespace flatmessage
                     buildin_types.insert("string");
                 }
 
-                void operator()(flatmessage::ast::enumeration const& enumeration) {}
+                void operator()(flatmessage::ast::enumeration const& enumeration)
+                {
+                    if (buildin_types.find(enumeration.name) != buildin_types.end())
+                        return;
+
+                    if (found_data_types.find(enumeration.name) != found_data_types.end())
+                        return;
+
+                    found_data_types.insert(enumeration.name);
+                }
                 void operator()(flatmessage::ast::attribute const& attribute)
                 {
                     if (buildin_types.find(attribute.type) != buildin_types.end())
