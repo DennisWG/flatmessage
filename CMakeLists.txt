@@ -20,3 +20,4 @@ enable_testing()
 
 add_subdirectory (src/lib)
 add_subdirectory (src/test)
+add_subdirectory (src/compiler)
