@@ -232,23 +232,16 @@ namespace flatmessage
             // Second pass - this->_modules has been populated
             for (auto& translation_unit : translation_units)
             {
-                // TODO: Remove scope once 'Selection statements with initializer' are available in Visual Studio
-                // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0305r1.html
+                if (auto name = ensure_imports_exist(translation_unit); !name.empty())
                 {
-                    auto name = ensure_imports_exist(translation_unit);
-                    if (!name.empty())
-                    {
-                        error(translation_unit, fmt::format("Imported module '{0}' couldn't be found", name));
-                        return false;
-                    }
+                    error(translation_unit, fmt::format("Imported module '{0}' couldn't be found", name));
+                    return false;
                 }
+
+                if (auto name = ensure_types_exist(translation_unit, exported_types); !name.empty())
                 {
-                    auto name = ensure_types_exist(translation_unit, exported_types);
-                    if (!name.empty())
-                    {
-                        error(translation_unit, fmt::format("Undefined data type '{0}'", name));
-                        return false;
-                    }
+                    error(translation_unit, fmt::format("Undefined data type '{0}'", name));
+                    return false;
                 }
             }
 
