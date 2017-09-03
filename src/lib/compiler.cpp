@@ -43,9 +43,9 @@ namespace flatmessage
         std::vector<std::string> imported_modules;
         // The protocol this translation unit represents
         std::string protocol;
-        // A list of 'data' structures that the translatio unit exports when imported
+        // A list of 'data' structures that the translation unit exports when imported
         std::vector<std::string> exported_types;
-        // A list of 'data' structures that the translatio unit imports from other modules
+        // A list of 'data' structures that the translation unit imports from other modules
         std::vector<std::string> imported_types;
 
         translation_unit() = default;
@@ -153,7 +153,7 @@ namespace flatmessage
         }
 
         // Returns empty string if the imported data types from the given translation_unit can be found. Returns name of
-        // first missing data type otherwhise
+        // first missing data type otherwise
         std::string ensure_types_exist(translation_unit const& tu,
                                        std::unordered_set<std::string> const& exported_types)
         {
