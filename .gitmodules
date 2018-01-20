@@ -1,12 +1,12 @@
 [submodule "contrib/testinator"]
 	path = contrib/testinator
 	url = https://github.com/elbeno/testinator.git
-[submodule "contrib/sol2"]
-	path = contrib/sol2
-	url = https://github.com/ThePhD/sol2.git
 [submodule "contrib/fmt"]
 	path = contrib/fmt
 	url = https://github.com/fmtlib/fmt
 [submodule "contrib/cxxopts"]
 	path = contrib/cxxopts
 	url = https://github.com/jarro2783/cxxopts.git
+[submodule "contrib/inja"]
+	path = contrib/inja
+	url = https://github.com/pantor/inja.git

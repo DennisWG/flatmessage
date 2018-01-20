@@ -28,4 +28,6 @@ message TheMessage
 {
     Head head;
     repeated Complex[2] complex;
+    string message = "123.123";
+    int test = 15;
 }

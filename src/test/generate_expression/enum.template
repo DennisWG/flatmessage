@@ -1,13 +1,9 @@
-{% for i,enum in pairs(enums) do
-%}Enum #{{i}} - {{enum.name}}:
-    Alignment: {{enum.alignment}}
+{% for enum in enums
+%}Enum #{{ index1 }} - {{ enum/name }}:
+    Alignment: {{ enum/alignment }}
     Values:{%
-    for j,value in pairs(enum.values) do
-        %}
-        #{{j}} - {{value.name}} = {{value.value}}{%
-    end
-%}
+for value in enum/values %}
+        #{{ index1 }} - {{ value/name }} = {{ value/value }}{%
+endfor %}
 
-{%
-end
-%}
+{% endfor %}

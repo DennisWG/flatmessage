@@ -37,6 +37,7 @@ BOOST_FUSION_ADAPT_STRUCT(flatmessage::ast::attribute,
     (std::string, type)
     (boost::optional<int>, arraySize)
     (std::string, name)
+    (boost::optional<flatmessage::ast::default_value_t>, defaultValue)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(flatmessage::ast::enumeration,

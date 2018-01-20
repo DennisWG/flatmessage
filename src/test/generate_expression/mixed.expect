@@ -15,18 +15,20 @@ Enum #2 - Type:
 
 Data #1 - Head:
     Attributes:
-    #1 - uint8, id
-    #2 - uint16, size
-    #3 - optional, uint32, crc
+        #1 - uint8, id
+        #2 - uint16, size
+        #3 - optional, uint32, crc
 
 Data #2 - Complex:
     Attributes:
-    #1 - Color, color
-    #2 - Type, type
+        #1 - Color, color
+        #2 - Type, type
 
 --------------------------------------------------
 
 Message #1 - TheMessage:
     Attributes:
-    #1 - Head, head
-    #2 - repeated, Complex, 2, complex
+        #1 - Head, head
+        #2 - repeated, Complex, 2, complex
+        #3 - string, message=123.123
+        #4 - int, test=15

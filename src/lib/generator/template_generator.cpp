@@ -14,102 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "template_renderer.hpp"
-
 #include <flatmessage/ast/ast.hpp>
 #include <flatmessage/generator/template_generator.hpp>
 
-#include <sol.hpp>
+// clang-format off
+#include <json.hpp>
+#include <inja.hpp>
+// clang-format on
 
 #include <fstream>
 #include <map>
+#include <variant>
 
-extern "C" {
-#include "lauxlib.h"
-#include "lua.h"
-#include "lualib.h"
-}
+using nlohmann::json;
 
 struct template_generator_impl
 {
     using result_type = void;
 
-    template_generator_impl(std::ostream& out) : out(out)
-    {
-        using namespace flatmessage::ast;
-        using optional_string = boost::optional<std::string>;
-        using optional_int = boost::optional<int>;
-
-        // clang-format off
-        lua.new_usertype<optional_string>("optional_s",
-            "isset", sol::property(&optional_string::is_initialized),
-            "value", sol::property(static_cast<std::string& (optional_string::*)()>(&optional_string::get))
-            );
-
-        lua.new_usertype<optional_int>("optional_i",
-            "isset", sol::property(&optional_int::is_initialized),
-            "value", sol::property(static_cast<int& (optional_int::*)()>(&optional_int::get))
-            );
-
-        lua.new_usertype<enum_value>("enum_value",
-            "name", sol::readonly(&enum_value::name),
-            "value", sol::readonly(&enum_value::value)
-            );
-
-        lua.new_usertype<enumeration>("enumeration",
-            "name", sol::readonly(&enumeration::name),
-            "alignment", sol::readonly(&enumeration::alignment),
-            "values", sol::readonly(&enumeration::values)
-            );
-
-        lua.new_usertype<attribute>("attribute",
-            "specifier", sol::readonly(&attribute::specifier),
-            "type", sol::readonly(&attribute::type),
-            "arraySize", sol::readonly(&attribute::arraySize),
-            "name", sol::readonly(&attribute::name)
-            );
-
-        lua.new_usertype<message>("message",
-            "name", sol::readonly(&message::name),
-            "attributes", sol::readonly(&message::attributes)
-            );
-
-        lua.new_usertype<flatmessage::ast::data>("data",
-            "name", sol::readonly(&data::name),
-            "attributes", sol::readonly(&data::attributes)
-            );
-
-        lua.new_usertype<flatmessage::ast::module_decl>("module",
-            "name", sol::readonly(&module_decl::name)
-            );
-
-        lua.new_usertype<flatmessage::ast::import_decl>("import",
-            "name", sol::readonly(&import_decl::name)
-            );
-
-        lua.new_usertype<flatmessage::ast::protocol_decl>("protocol",
-            "name", sol::readonly(&protocol_decl::name)
-            );
-        // clang-format on
-    }
-
-    std::string generate(std::string const& templateCode)
-    {
-        lua.open_libraries();
-
-        lua["enums"] = enums;
-        lua["data"] = data;
-        lua["messages"] = messages;
-        lua["module"] = module;
-        lua["imports"] = imports;
-        lua["protocol"] = protocol;
-
-        lua.create_named_table("includes");
-
-        sol::table renderer = lua.script(template_renderer);
-        sol::function fun = renderer["compile"];
-        return fun(templateCode);
-    }
+    std::string generate(std::string const& templateCode);
 
     void operator()(flatmessage::ast::enumeration const& enumeration);
     void operator()(flatmessage::ast::message const& message);
@@ -118,7 +41,7 @@ struct template_generator_impl
     void operator()(flatmessage::ast::import_decl const& import_decl);
     void operator()(flatmessage::ast::protocol_decl const& protocol_decl);
 
-    std::ostream& out;
+    nlohmann::json ast;
 
     std::vector<flatmessage::ast::enumeration> enums;
     std::vector<flatmessage::ast::message> messages;
@@ -126,8 +49,6 @@ struct template_generator_impl
     flatmessage::ast::module_decl module;
     std::vector<flatmessage::ast::import_decl> imports;
     flatmessage::ast::protocol_decl protocol;
-
-    sol::state lua;
 };
 
 namespace flatmessage
@@ -145,7 +66,7 @@ namespace flatmessage
 
         bool template_generator::generate(std::ostream& out, flatmessage::ast::ast const& ast)
         {
-            template_generator_impl v(out);
+            template_generator_impl v;
 
             for (auto const& ast_ : ast)
                 boost::apply_visitor(v, ast_);
@@ -157,32 +78,139 @@ namespace flatmessage
     }
 }
 
+std::string template_generator_impl::generate(std::string const& templateCode)
+{
+    ast["hasData"] = !ast["data"].empty();
+    ast["hasMessages"] = !ast["messages"].empty();
+    ast["hasImports"] = !ast["imports"].empty();
+    return inja::render(templateCode, ast);
+}
+
 void template_generator_impl::operator()(flatmessage::ast::enumeration const& enumeration)
 {
-    enums.push_back(enumeration);
+    json values;
+
+    // clang-format off
+    for (auto&& value : enumeration.values)
+    {
+        values.push_back({
+            {"name", value.name},
+            {"value", value.value}
+        });
+    }
+
+    json obj {
+        {"name", enumeration.name},
+        {"alignment",enumeration.alignment},
+        {"values", values}
+    };
+    // clang-format on
+
+    ast["enums"].push_back(obj);
+}
+
+json convertAttributes(std::vector<flatmessage::ast::attribute> const& attributes)
+{
+    struct visitor
+    {
+        void operator()(int intValue) { myValue = intValue; }
+        void operator()(double doubleValue) { myValue = doubleValue; }
+        void operator()(std::string const& stringValue) { myValue = stringValue; }
+
+        json myValue;
+    };
+
+    json attribs;
+    for (auto&& attrib : attributes)
+    {
+        json specifier;
+        if (attrib.specifier)
+            specifier = *attrib.specifier;
+
+        json arraySize;
+        if (attrib.arraySize)
+            arraySize = *attrib.arraySize;
+
+        visitor v;
+        if (attrib.defaultValue)
+            boost::apply_visitor(v, *attrib.defaultValue);
+
+        // clang-format off
+        attribs.push_back({
+            { "hasSpecifier", !specifier.empty() },
+            {"specifier", specifier},
+            {"type", attrib.type},
+            { "hasArraySize", !arraySize.empty() },
+            {"arraySize", arraySize},
+            {"name", attrib.name},
+            { "hasDefaultValue", !v.myValue.empty() },
+            {"defaultValue", v.myValue}
+        });
+        // clang-format on
+    }
+
+    return attribs;
 }
 
 void template_generator_impl::operator()(flatmessage::ast::message const& message)
 {
-    messages.push_back(message);
+    // clang-format off
+    json obj {
+        {"name", message.name},
+        {"attributes", convertAttributes(message.attributes)}
+    };
+    // clang-format on
+
+    ast["messages"].push_back(obj);
 }
 
 void template_generator_impl::operator()(flatmessage::ast::data const& data)
 {
-    this->data.push_back(data);
+    // clang-format off
+    json obj {
+        {"name", data.name},
+        {"attributes", convertAttributes(data.attributes)}
+    };
+    // clang-format on
+
+    ast["data"].push_back(obj);
+}
+
+auto explode(std::string const& str, char delim = ' ')
+{
+    std::vector<std::string> result;
+    std::istringstream ss(str);
+
+    for (std::string token; std::getline(ss, token, delim); )
+        result.push_back(std::move(token));
+
+    return result;
 }
 
 void template_generator_impl::operator()(flatmessage::ast::module_decl const& module_decl)
 {
-    module = module_decl;
+    ast["fullModule"] = module_decl.name;
+    auto modulePath = explode(module_decl.name, '.');
+
+    ast["moduleName"] = modulePath.back();
+    ast["modulePath"] = std::vector<std::string>{ modulePath.begin(), modulePath.end() - 1 };
 }
 
 void template_generator_impl::operator()(flatmessage::ast::import_decl const& import_decl)
 {
-    imports.push_back(import_decl);
+    auto importPath = explode(import_decl.name, '.');
+
+    // clang-format off
+    json import{
+        {"fullImport", import_decl.name},
+        {"importName", importPath.back()},
+        {"importPath", std::vector<std::string>{ importPath.begin(), importPath.end() - 1 } }
+    };
+    // clang-format on
+    ast["imports"].push_back(import);
 }
 
 void template_generator_impl::operator()(flatmessage::ast::protocol_decl const& protocol_decl)
 {
-    protocol = protocol_decl;
+    ast["protocol"] = protocol_decl.name;
 }

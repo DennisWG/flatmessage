@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7.0)
+cmake_minimum_required(VERSION 3.8.0)
 
 add_executable (test_${PROJECT_NAME}
     main.cpp
@@ -17,25 +17,19 @@ target_compile_definitions(test_${PROJECT_NAME}
     _HAS_AUTO_PTR_ETC=1 # TODO: Remove once boost no longer uses std::unary_function
 )
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    include(VsDebugDir)
-    SET_DEBUG_DIRECTORY(test_${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
-endif()
-
-# TODO: uncomment below and remove above once Visual Studio updates to CMake 3.8 or higher
-#set_target_properties(test_${PROJECT_NAME}
-#    PROPERTIES
-#        VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-#)
+set_target_properties(test_${PROJECT_NAME}
+    PROPERTIES
+        VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 # TODO: Remove once Visual Studio uses CMake 3.8 or higher
  if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")		
     set(MY_CXX_FLAGS_LIST		
-        /std:c++latest		
+        /std:c++latest
     )		
-    string(REPLACE ";" " " MY_CXX_FLAGS "${MY_CXX_FLAGS_LIST}")		
+    string(REPLACE ";" " " MY_CXX_FLAGS "${MY_CXX_FLAGS_LIST}")
  		
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MY_CXX_FLAGS}")		
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MY_CXX_FLAGS}")
  endif()
 
 include(Testinator)

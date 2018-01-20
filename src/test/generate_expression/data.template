@@ -1,56 +1,10 @@
-{%
-cppTypes = {
-    byte = "uint8_t",
-    uint8 = "uint8_t",
-    int8 = "int8_t",
-    word = "uint16_t",
-    uint16 = "uint16_t",
-    int16 = "int16_t",
-    dword = "uint32_t",
-    uint32 = "uint32_t",
-    int32 = "int32_t",
-    qword = "uint64_t",
-    uint64 = "uint64_t",
-    int64 = "int64_t",
-    string = "std::string",
-}
-
-function writeType(attribute) 
-    if cppTypes[attribute.type] then %}{{cppTypes[attribute.type]}}{% else %}{{attribute.type}}{% end
-end 
-
-function writeArray(attribute)
-    %}std::array<{% writeType(attribute) %}, {{attribute.arraySize.value}}>{%
-end
-
-function doSpecifier(name, attribute)
-    %}{{name}}<{% if attribute.arraySize.isset then writeArray(attribute) else writeType(attribute) end %}>{%
-end
-
-function writeSpecifier(specifier, attribute)
-    if specifier.value == "repeated" then 
-        doSpecifier("std::vector", attribute)
-    elseif specifier.value == "optional" then
-        doSpecifier("boost::optional", attribute)
-    end
-    %} {{attribute.name}}{% 
-end
-
-function writeAttribute(attribute)
-    if attribute.specifier.isset then
-        writeSpecifier(attribute.specifier, attribute)
-    else writeType(attribute)
-        %} {{attribute.name}}{% 
-    end
-end
-
-for _,data in pairs(data) do
+{% for dat in data
 %}// Generated Code. Do not edit!
-struct {{data.name}}
-{ {% for _, attribute in pairs(data.attributes) do %}
-    {% writeAttribute(attribute); %};{%
-    end
-    %}
+struct {{ dat/name }}
+{{##}{%
+for attrib in dat/attributes %}
+    {% if attrib/hasSpecifier %}{% if attrib/specifier == "optional" %}boost::optional<{% else %}std::vector<{% endif %}{% endif %}{{ attrib/type }}{% if attrib/hasSpecifier %}>{% endif %} {{ attrib/name }};{%
+endfor %}
 };
 
-{% end %}
+{% endfor %}

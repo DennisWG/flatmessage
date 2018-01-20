@@ -1,50 +1,54 @@
-{% 
-function writeEncoder(data, type) %}
-{{type}}& operator<<({{type}}& encoder, const {{data.name}}& data)
-{ {%
-    for _, attribute in pairs(data.attributes) do
-        %}{{string.format("\n    encoder << data.%s;", attribute.name)}}{%
-    end
-%}
-    return encoder;
-}
-{%
-end
-
-function writeDecoder(data, type) %}
-{{type}}& operator>>({{type}}& decoder, const {{data.name}}& data)
-{ {%
-    for _, attribute in pairs(data.attributes) do
-        %}{{string.format("\n    decoder >> data.%s;", attribute.name)}}{%
-    end
-%}
-    return decoder;
-}
-{%
-end
-
-function getNamespace()
-    local namespace, file = module.name:match('(.*)%.(.*)')
-    return namespace:gsub("%.", "::");
-end
-
-function printIncludeHpp()
-    local namespace, file = module.name:match('(.*)%.(.*)')
-    %}{{file}}{%
-end
-
-%}#include "{% printIncludeHpp() %}.hpp"
+#include "{{ moduleName }}.hpp"
 #include <flatmessage.hpp>
 
-using namespace {{getNamespace()}};
-{%
-for _,data in pairs(data) do 
-    writeEncoder(data, "BinaryEncoder")
-    writeDecoder(data, "BinaryDecoder")
-end 
+using namespace {% for i in modulePath %}{% if is_first %}{{ i }}{% else %}::{{ i }}{% endif %}{% endfor %};
 
-for _,msg in pairs(messages) do
-    writeEncoder(msg, "BinaryEncoder")
-    writeDecoder(msg, "BinaryDecoder")
-end
-%}
+## for dat in data
+{##}
+BinaryEncoder& operator<<(BinaryEncoder& encoder, const {{ dat/name }}& data)
+{
+
+## for attrib in dat/attributes
+{##}    encoder << data.{{ attrib/name }};
+
+## endfor
+{##}    return encoder;
+}
+
+BinaryDecoder& operator>>(BinaryDecoder& decoder, const {{ dat/name }}& data)
+{
+
+## for attrib in dat/attributes
+{##}    decoder >> data.{{ attrib/name }};
+
+## endfor
+{##}    return decoder;
+}
+
+## endfor
+## if hasMessages
+{##}
+## for msg in messages
+{##}
+BinaryEncoder& operator<<(BinaryEncoder& encoder, const {{ msg/name }}& data)
+{
+
+## for attrib in msg/attributes
+{##}    encoder << data.{{ attrib/name }};
+
+## endfor
+{##}    return encoder;
+}
+
+BinaryDecoder& operator>>(BinaryDecoder& decoder, const {{ msg/name }}& data)
+{
+
+## for attrib in msg/attributes
+{##}    decoder >> data.{{ attrib/name }};
+
+## endfor
+{##}    return decoder;
+}
+
+## endfor
+## endif

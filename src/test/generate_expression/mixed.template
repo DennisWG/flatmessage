@@ -1,54 +1,28 @@
-{% for i,enum in pairs(enums) do
-%}Enum #{{i}} - {{enum.name}}:
-    Alignment: {{enum.alignment}}
+{% for enum in enums
+%}Enum #{{ index1 }} - {{ enum/name }}:
+    Alignment: {{ enum/alignment }}
     Values:{%
-    for j,value in pairs(enum.values) do
-    %}
-        #{{j}} - {{value.name}} = {{value.value}}{%
-    end
-%}
+for value in enum/values %}
+        #{{ index1 }} - {{ value/name }} = {{ value/value }}{%
+endfor %}
 
-{%
-end
+{% endfor
 %}--------------------------------------------------
 
-{%
-for i,data in pairs(data) do
-%}Data #{{i}} - {{data.name}}:
+{% for dat in data
+%}Data #{{ index1 }} - {{ dat/name }}:
     Attributes:{%
-    for j,v in pairs(data.attributes) do
-    %}
-    #{{j}} - {%
-        if v.specifier.isset then
-            %}{{v.specifier.value}}, {%
-        end
-        %}{{v.type}}, {%
-        if v.arraySize.isset then
-            %}{{v.arraySize.value}}, {%
-        end
-        %}{{v.name}}{%
-    end
-%}
+for attrib in dat/attributes %}
+        #{{ index1 }} - {% if attrib/hasSpecifier %}{{ attrib/specifier }}, {% endif %}{{ attrib/type }}, {{ attrib/name }}{%
+endfor %}
 
-{%
-end
+{% endfor
 %}--------------------------------------------------
 
-{%
-for i,msg in pairs(messages) do
-%}Message #{{i}} - {{msg.name}}:
+{% for msg in messages
+%}Message #{{ index1 }} - {{ msg/name }}:
     Attributes:{%
-    for j,v in pairs(msg.attributes) do
-    %}
-    #{{j}} - {%
-            if v.specifier.isset then
-                %}{{v.specifier.value}}, {%
-            end
-        %}{{v.type}}, {%
-        if v.arraySize.isset then
-            %}{{v.arraySize.value}}, {%
-        end
-        %}{{v.name}}{%
-    end %}
-
-{% end %}
+for attrib in msg/attributes %}
+        #{{ index1 }} - {% if attrib/hasSpecifier %}{{ attrib/specifier }}, {% endif %}{{ attrib/type }}, {% if attrib/hasArraySize %}{{ attrib/arraySize }}, {% endif %}{{ attrib/name }}{% if attrib/hasDefaultValue %}={{ attrib/defaultValue }}{% endif %}{%
+endfor %}
+{% endfor %}

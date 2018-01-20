@@ -49,12 +49,15 @@ namespace flatmessage
             std::vector<attribute> attributes;
         };
 
+        using default_value_t = boost::variant<int, float, double, std::string>;
+
         struct attribute : x3::position_tagged
         {
             boost::optional<std::string> specifier;
             std::string type;
             boost::optional<int> arraySize;
             std::string name;
+            boost::optional<default_value_t> defaultValue;
         };
 
         struct enumeration : x3::position_tagged

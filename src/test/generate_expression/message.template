@@ -1,13 +1,6 @@
-{% msg = messages[1] values = msg.attributes n = #values
-%}{{msg.name}}{%
-for k,v in pairs(values) do
-    %}{{"\n    "}}{%
-    if v.specifier.isset then
-        %}{{v.specifier.value}}, {%
-    end 
-    %}{{v.type}}, {%
-    if v.arraySize.isset then
-        %}{{v.arraySize.value}}, {%
-    end
-    %}{{v.name}}{%    
-end %}
+{% for msg in messages
+%}{{ msg/name }}{%
+for attrib in msg/attributes %}
+    {% if attrib/hasSpecifier %}{{ attrib/specifier }}, {% endif %}{{ attrib/type }}, {% if attrib/hasArraySize %}{{ attrib/arraySize }}, {% endif %}{{ attrib/name }}{% if attrib/hasDefaultValue %}={{ attrib/defaultValue }}{% endif %}{%
+endfor %}
+{% endfor %}

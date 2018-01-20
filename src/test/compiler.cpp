@@ -65,8 +65,8 @@ bool test_one(fs::path file_name, std::string const& extension)
     auto output_file_name = file_name;
     output_file_name.replace_extension(extension);
 
-    auto output = test::load(working_folder / output_file_name);
-    auto expected = test::load(working_folder / output_file_name.replace_extension(extension + ".expected"));
+    auto output = test::load(output_file_name);
+    auto expected = test::load(output_file_name.replace_extension(extension + ".expected"));
 
     auto result = test::compare(output, expected);
 
@@ -110,7 +110,7 @@ bool test_output(std::vector<fs::path> const& file_paths, std::vector<std::strin
     {
         for (auto& extension : file_extensions)
         {
-            if (!test_one(path.stem(), extension))
+            if (!test_one(working_folder / path.stem(), extension))
                 return false;
         }
     }

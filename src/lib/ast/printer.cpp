@@ -68,6 +68,25 @@ namespace flatmessage
 
             out << ", ";
             out << attribute.name;
+
+            if (attribute.defaultValue)
+            {
+                out << "=";
+
+                struct visit
+                {
+                    visit(std::ostream& out) : out(out) {}
+
+                    void operator()(int intValue) { out << intValue; }
+                    void operator()(double doubleValue) { out << doubleValue; }
+                    void operator()(std::string const& stringValue) { out << stringValue; }
+
+                    std::ostream& out;
+                } v{out};
+
+                boost::apply_visitor(v, *attribute.defaultValue);
+            }
+
             out << ')';
         }
 

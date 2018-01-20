@@ -1,1 +1,1 @@
-message foo (uint8, id)(uint16, size)(int, foo)
+message foo (uint8, id)(uint16, size)(int, foo=10)
