@@ -80,6 +80,7 @@ namespace flatmessage
 
 std::string template_generator_impl::generate(std::string const& templateCode)
 {
+    ast["hasEnums"] = !ast["enums"].empty();
     ast["hasData"] = !ast["data"].empty();
     ast["hasMessages"] = !ast["messages"].empty();
     ast["hasImports"] = !ast["imports"].empty();

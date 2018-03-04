@@ -46,9 +46,8 @@ int main(int argc, char** argv)
     }
     catch (std::exception& e)
     {
-        std::cout << e.what() << '\n';
+        std::cerr << "flatmessage_compiler: Error:\n" << e.what() << '\n';
         return -2;
     }
-
     return 0;
 }

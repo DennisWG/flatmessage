@@ -189,6 +189,8 @@ namespace flatmessage
             {
                 std::string error_message;
                 auto ast = parser::parse_file(entry.input_file, error_message);
+                if (!error_message.empty())
+                    throw std::exception(error_message.c_str());
 
                 using cf = compiler_flags;
 
