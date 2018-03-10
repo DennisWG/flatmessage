@@ -18,7 +18,7 @@ limitations under the License.
 #include <flatmessage/generator/template_generator.hpp>
 
 // clang-format off
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 #include <inja.hpp>
 // clang-format on
 
