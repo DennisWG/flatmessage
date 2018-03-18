@@ -1,0 +1,3 @@
+Character
+    [Primary=1] uint32, id
+    string, name

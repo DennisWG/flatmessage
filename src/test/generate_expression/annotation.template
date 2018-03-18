@@ -1,0 +1,6 @@
+{% for dat in data
+%}{{ dat/name }}{%
+for attrib in dat/attributes %}
+    {% if attrib/hasAnnotation %}[{{ attrib/annotation/name }}={{ attrib/annotation/value }}] {% endif %}{% if attrib/hasSpecifier %}{{ attrib/specifier }}, {% endif %}{{ attrib/type }}, {% if attrib/hasArraySize %}{{ attrib/arraySize }}, {% endif %}{{ attrib/name }}{% if attrib/hasDefaultValue %}={{ attrib/defaultValue }}{% endif %}{%
+endfor %}
+{% endfor %}
