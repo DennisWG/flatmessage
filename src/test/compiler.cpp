@@ -25,7 +25,7 @@ namespace fs = boost::filesystem;
 
 using input_expect_pair = std::pair<fs::path, std::string>;
 
-const fs::path working_folder = fs::current_path() / "../compiler_expression";
+const fs::path working_folder = fs::current_path() / "compiler_expression";
 
 // Returns a list of paths with all .input files that can be found in the working_folder
 std::vector<fs::path> get_test_files()

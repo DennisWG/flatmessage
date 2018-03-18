@@ -1,0 +1,5 @@
+data foo
+{
+    [foo 1]
+    int foo = 1;
+}

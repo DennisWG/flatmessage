@@ -1,0 +1,4 @@
+In file <%.*?bad_annotation_missing_equals.input%>, line 3:
+Error! Expecting default_value here:
+    [foo 1]
+_________^_

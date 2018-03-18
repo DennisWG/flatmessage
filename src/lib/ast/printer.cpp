@@ -16,120 +16,144 @@ limitations under the License.
 
 #include <flatmessage/ast/printer.hpp>
 
-namespace flatmessage
+namespace flatmessage::ast
 {
-    namespace ast
+    struct visitor
     {
-        struct visitor
-        {
-            using result_type = void;
+        using result_type = void;
 
-            visitor(std::ostream& out) : out(out) {}
-            void operator()(enum_value const& enumValue);
-            void operator()(enumeration const& enumeration);
-            void operator()(attribute const& attribute);
-            void operator()(message const& message);
-            void operator()(data const& data);
-            void operator()(module_decl const& module_decl);
-            void operator()(import_decl const& import_decl);
-            void operator()(protocol_decl const& protocol_decl);
+        visitor(std::ostream& out) : out(out) {}
+        void operator()(enum_value const& enumValue);
+        void operator()(enumeration const& enumeration);
+        void operator()(attribute const& attribute);
+        void operator()(message const& message);
+        void operator()(data const& data);
+        void operator()(module_decl const& module_decl);
+        void operator()(import_decl const& import_decl);
+        void operator()(protocol_decl const& protocol_decl);
+
+        std::ostream& out;
+    };
+
+    void flatmessage::ast::visitor::operator()(enum_value const& enumValue)
+    {
+        out << '(';
+
+        out << enumValue.name << ", ";
+        out << enumValue.value;
+
+        out << ')';
+    }
+
+    void flatmessage::ast::visitor::operator()(enumeration const& enumeration)
+    {
+        out << "enum " << enumeration.name << ':' << enumeration.alignment << ' ';
+
+        for (auto const& value : enumeration.values)
+            (*this)(value);
+        out << '\n';
+    }
+
+    void printAnnotation(boost::optional<annotation> const& annotation, std::ostream& out)
+    {
+        if (!annotation)
+            return;
+        out << '[';
+
+        struct visit
+        {
+            visit(std::ostream& out) : out(out) {}
+
+            void operator()(int intValue) { out << intValue; }
+            void operator()(double doubleValue) { out << doubleValue; }
+            void operator()(std::string const& stringValue) { out << stringValue; }
 
             std::ostream& out;
-        };
+        } v{out};
 
-        void flatmessage::ast::visitor::operator()(enum_value const& enumValue)
+        out << annotation->name << '=';
+        boost::apply_visitor(v, annotation->value);
+        out << "] ";
+    }
+
+    void printDefaultValue(boost::optional<default_value_t> const& defaultValue, std::ostream& out)
+    {
+        if (!defaultValue)
+            return;
+        out << "=";
+
+        struct visit
         {
-            out << '(';
+            visit(std::ostream& out) : out(out) {}
 
-            out << enumValue.name << ", ";
-            out << enumValue.value;
+            void operator()(int intValue) { out << intValue; }
+            void operator()(double doubleValue) { out << doubleValue; }
+            void operator()(std::string const& stringValue) { out << stringValue; }
 
-            out << ')';
-        }
+            std::ostream& out;
+        } v{out};
 
-        void flatmessage::ast::visitor::operator()(enumeration const& enumeration)
-        {
-            out << "enum " << enumeration.name << ':' << enumeration.alignment << ' ';
+        boost::apply_visitor(v, *defaultValue);
+    }
 
-            for (auto const& value : enumeration.values)
-                (*this)(value);
-            out << '\n';
-        }
+    void flatmessage::ast::visitor::operator()(attribute const& attribute)
+    {
+        out << '(';
+        if (attribute.specifier)
+            out << *attribute.specifier << ", ";
 
-        void flatmessage::ast::visitor::operator()(attribute const& attribute)
-        {
-            out << '(';
-            if (attribute.specifier)
-                out << *attribute.specifier << ", ";
+        out << attribute.type;
+        if (attribute.arraySize)
+            out << '[' << *attribute.arraySize << ']';
 
-            out << attribute.type;
-            if (attribute.arraySize)
-                out << '[' << *attribute.arraySize << ']';
+        out << ", ";
+        printAnnotation(attribute.annotation, out);
+        out << attribute.name;
 
-            out << ", ";
-            out << attribute.name;
+        printDefaultValue(attribute.defaultValue, out);
 
-            if (attribute.defaultValue)
-            {
-                out << "=";
+        out << ')';
+    }
 
-                struct visit
-                {
-                    visit(std::ostream& out) : out(out) {}
+    void flatmessage::ast::visitor::operator()(message const& message)
+    {
+        out << "message " << message.name << ' ';
 
-                    void operator()(int intValue) { out << intValue; }
-                    void operator()(double doubleValue) { out << doubleValue; }
-                    void operator()(std::string const& stringValue) { out << stringValue; }
+        for (auto const& attribute : message.attributes)
+            (*this)(attribute);
 
-                    std::ostream& out;
-                } v{out};
+        out << '\n';
+    }
 
-                boost::apply_visitor(v, *attribute.defaultValue);
-            }
+    void flatmessage::ast::visitor::operator()(data const& data)
+    {
+        out << "data " << data.name << ' ';
 
-            out << ')';
-        }
+        for (auto const& attribute : data.attributes)
+            (*this)(attribute);
 
-        void flatmessage::ast::visitor::operator()(message const& message)
-        {
-            out << "message " << message.name << ' ';
+        out << '\n';
+    }
 
-            for (auto const& attribute : message.attributes)
-                (*this)(attribute);
+    void flatmessage::ast::visitor::operator()(module_decl const& module_decl)
+    {
+        out << "module " << module_decl.name << '\n';
+    }
 
-            out << '\n';
-        }
+    void flatmessage::ast::visitor::operator()(import_decl const& import_decl)
+    {
+        out << "import " << import_decl.name << '\n';
+    }
 
-        void flatmessage::ast::visitor::operator()(data const& data)
-        {
-            out << "data " << data.name << ' ';
+    void flatmessage::ast::visitor::operator()(protocol_decl const& protocol_decl)
+    {
+        out << "protocol " << protocol_decl.name << '\n';
+    }
 
-            for (auto const& attribute : data.attributes)
-                (*this)(attribute);
-
-            out << '\n';
-        }
-
-        void flatmessage::ast::visitor::operator()(module_decl const& module_decl)
-        {
-            out << "module " << module_decl.name << '\n';
-        }
-
-        void flatmessage::ast::visitor::operator()(import_decl const& import_decl)
-        {
-            out << "import " << import_decl.name << '\n';
-        }
-
-        void flatmessage::ast::visitor::operator()(protocol_decl const& protocol_decl)
-        {
-            out << "protocol " << protocol_decl.name << '\n';
-        }
-
-        void print(std::ostream& out, ast const& ast)
-        {
-            visitor v(out);
-            for (auto const& ast_ : ast)
-                boost::apply_visitor(v, ast_);
-        }
+    void print(std::ostream& out, ast const& ast)
+    {
+        visitor v(out);
+        for (auto const& ast_ : ast)
+            boost::apply_visitor(v, ast_);
     }
 }

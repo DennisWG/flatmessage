@@ -1,0 +1,4 @@
+In file <%.*?bad_annotation_bad_identifier.input%>, line 3:
+Error! Expecting identifier here:
+    [1test=1]
+_____^_

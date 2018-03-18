@@ -1,0 +1,4 @@
+In file <%.*?bad_annotation_missing_close_bracket.input%>, line 4:
+Error! Expecting ']' here:
+    int foo = 1;
+____^_

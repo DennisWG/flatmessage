@@ -24,77 +24,83 @@ limitations under the License.
 #include <list>
 #include <vector>
 
-namespace flatmessage
+namespace flatmessage::ast
 {
-    namespace ast
+    namespace x3 = boost::spirit::x3;
+
+    struct nil
     {
-        namespace x3 = boost::spirit::x3;
+    };
+    struct data;
+    struct message;
+    struct attribute;
+    struct enumeration;
+    struct enum_value;
 
-        struct nil {};
-        struct data;
-        struct message;
-        struct attribute;
-        struct enumeration;
-        struct enum_value;
+    struct data : x3::position_tagged
+    {
+        std::string name;
+        std::vector<attribute> attributes;
+    };
 
-        struct data : x3::position_tagged
-        {
-            std::string name;
-            std::vector<attribute> attributes;
-        };
+    struct message : x3::position_tagged
+    {
+        std::string name;
+        std::vector<attribute> attributes;
+    };
 
-        struct message : x3::position_tagged
-        {
-            std::string name;
-            std::vector<attribute> attributes;
-        };
+    using default_value_t = boost::variant<int, float, double, std::string>;
 
-        using default_value_t = boost::variant<int, float, double, std::string>;
+    struct annotation : x3::position_tagged
+    {
+        std::string name;
+        boost::variant<int, float, double, std::string> value;
+    };
 
-        struct attribute : x3::position_tagged
-        {
-            boost::optional<std::string> specifier;
-            std::string type;
-            boost::optional<int> arraySize;
-            std::string name;
-            boost::optional<default_value_t> defaultValue;
-        };
+    struct attribute : x3::position_tagged
+    {
+        boost::optional<annotation> annotation;
+        boost::optional<std::string> specifier;
+        std::string type;
+        boost::optional<int> arraySize;
+        std::string name;
+        boost::optional<default_value_t> defaultValue;
+    };
 
-        struct enumeration : x3::position_tagged
-        {
-            std::string name;
-            std::string alignment;
-            std::vector<enum_value> values;
-        };
+    struct enumeration : x3::position_tagged
+    {
+        std::string name;
+        std::string alignment;
+        std::vector<enum_value> values;
+    };
 
-        struct enum_value : x3::position_tagged
-        {
-            std::string name;
-            int value;
-        };
+    struct enum_value : x3::position_tagged
+    {
+        std::string name;
+        int value;
+    };
 
-        struct module_decl : x3::position_tagged
-        {
-            std::string name;
-        };
+    struct module_decl : x3::position_tagged
+    {
+        std::string name;
+    };
 
-        struct import_decl : x3::position_tagged
-        {
-            std::string name;
-        };
+    struct import_decl : x3::position_tagged
+    {
+        std::string name;
+    };
 
-        struct protocol_decl : x3::position_tagged
-        {
-            std::string name;
-        };
+    struct protocol_decl : x3::position_tagged
+    {
+        std::string name;
+    };
 
-        using ast = std::vector<boost::variant<message, enumeration, data, module_decl, import_decl, protocol_decl>>;
+    using ast = std::vector<boost::variant<message, enumeration, data, module_decl, import_decl, protocol_decl>>;
 
-        // print functions for debugging
-        inline std::ostream& operator<<(std::ostream& out, nil)
-        {
-            out << "nil";
-            return out;
-        }
+    // print functions for debugging
+    inline std::ostream& operator<<(std::ostream& out, nil)
+    {
+        out << "nil";
+        return out;
     }
 }

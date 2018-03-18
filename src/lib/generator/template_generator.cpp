@@ -51,32 +51,29 @@ struct template_generator_impl
     flatmessage::ast::protocol_decl protocol;
 };
 
-namespace flatmessage
+namespace flatmessage::generator
 {
-    namespace generator
+    template_generator::template_generator(std::string const& template_file_path)
     {
-        template_generator::template_generator(std::string const& template_file_path)
-        {
-            std::ifstream file(template_file_path);
-            if (!file)
-                throw std::exception{("Invalid file path \"" + template_file_path + "\"").c_str()};
+        std::ifstream file(template_file_path);
+        if (!file)
+            throw std::exception{("Invalid file path \"" + template_file_path + "\"").c_str()};
 
-            _template = std::string{(std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>()};
-        }
-
-        bool template_generator::generate(std::ostream& out, flatmessage::ast::ast const& ast)
-        {
-            template_generator_impl v;
-
-            for (auto const& ast_ : ast)
-                boost::apply_visitor(v, ast_);
-
-            out << v.generate(_template);
-
-            return true;
-        }
+        _template = std::string{(std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>()};
     }
-}
+
+    bool template_generator::generate(std::ostream& out, flatmessage::ast::ast const& ast)
+    {
+        template_generator_impl v;
+
+        for (auto const& ast_ : ast)
+            boost::apply_visitor(v, ast_);
+
+        out << v.generate(_template);
+
+        return true;
+    }
+} // namespace flatmessage::generator
 
 std::string template_generator_impl::generate(std::string const& templateCode)
 {
@@ -136,16 +133,28 @@ json convertAttributes(std::vector<flatmessage::ast::attribute> const& attribute
         if (attrib.defaultValue)
             boost::apply_visitor(v, *attrib.defaultValue);
 
+        visitor av;
+        if (attrib.annotation)
+            boost::apply_visitor(av, attrib.annotation->value);
+
+        json annotation;
+        if (!av.myValue.empty())
+        {
+            annotation = {{"name", attrib.annotation->name}, {"value", av.myValue}};
+        }
+
         // clang-format off
         attribs.push_back({
-            { "hasSpecifier", !specifier.empty() },
+            {"hasSpecifier", !specifier.empty()},
             {"specifier", specifier},
             {"type", attrib.type},
-            { "hasArraySize", !arraySize.empty() },
+            {"hasArraySize", !arraySize.empty()},
             {"arraySize", arraySize},
             {"name", attrib.name},
-            { "hasDefaultValue", !v.myValue.empty() },
-            {"defaultValue", v.myValue}
+            {"hasDefaultValue", !v.myValue.empty()},
+            {"defaultValue", v.myValue},
+            {"hasAnnotation", !av.myValue.empty()},
+            {"annotation", annotation}
         });
         // clang-format on
     }
@@ -182,7 +191,7 @@ auto explode(std::string const& str, char delim = ' ')
     std::vector<std::string> result;
     std::istringstream ss(str);
 
-    for (std::string token; std::getline(ss, token, delim); )
+    for (std::string token; std::getline(ss, token, delim);)
         result.push_back(std::move(token));
 
     return result;
@@ -194,7 +203,7 @@ void template_generator_impl::operator()(flatmessage::ast::module_decl const& mo
     auto modulePath = explode(module_decl.name, '.');
 
     ast["moduleName"] = modulePath.back();
-    ast["modulePath"] = std::vector<std::string>{ modulePath.begin(), modulePath.end() - 1 };
+    ast["modulePath"] = std::vector<std::string>{modulePath.begin(), modulePath.end() - 1};
 }
 
 void template_generator_impl::operator()(flatmessage::ast::import_decl const& import_decl)
