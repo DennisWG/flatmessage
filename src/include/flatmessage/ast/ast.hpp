@@ -59,7 +59,7 @@ namespace flatmessage::ast
 
     struct attribute : x3::position_tagged
     {
-        boost::optional<annotation> annotation;
+        std::vector<annotation> annotations;
         boost::optional<std::string> specifier;
         std::string type;
         boost::optional<int> arraySize;

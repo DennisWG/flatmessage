@@ -1,0 +1,1 @@
+data Character (uint32, [Primary=1,AutoIncrement=1,NotNull=1] id)(string, name)

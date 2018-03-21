@@ -1,6 +1,10 @@
 {% for dat in data
 %}{{ dat/name }}{%
 for attrib in dat/attributes %}
-    {% if attrib/hasAnnotation %}[{{ attrib/annotation/name }}={{ attrib/annotation/value }}] {% endif %}{% if attrib/hasSpecifier %}{{ attrib/specifier }}, {% endif %}{{ attrib/type }}, {% if attrib/hasArraySize %}{{ attrib/arraySize }}, {% endif %}{{ attrib/name }}{% if attrib/hasDefaultValue %}={{ attrib/defaultValue }}{% endif %}{%
+    {% if attrib/hasAnnotations %}[
+## for annotation in attrib/annotations
+{{ annotation/name }}={{ annotation/value }}{% if not is_last %},{% endif %}
+## endfor
+] {% endif %}{% if attrib/hasSpecifier %}{{ attrib/specifier }}, {% endif %}{{ attrib/type }}, {% if attrib/hasArraySize %}{{ attrib/arraySize }}, {% endif %}{{ attrib/name }}{% if attrib/hasDefaultValue %}={{ attrib/defaultValue }}{% endif %}{%
 endfor %}
 {% endfor %}

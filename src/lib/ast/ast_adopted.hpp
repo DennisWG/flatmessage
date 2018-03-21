@@ -38,7 +38,7 @@ BOOST_FUSION_ADAPT_STRUCT(flatmessage::ast::annotation,
 )
 
 BOOST_FUSION_ADAPT_STRUCT(flatmessage::ast::attribute,
-    (boost::optional<flatmessage::ast::annotation>, annotation)
+    (std::vector<flatmessage::ast::annotation>, annotations)
     (boost::optional<std::string>, specifier)
     (std::string, type)
     (boost::optional<int>, arraySize)

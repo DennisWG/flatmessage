@@ -106,17 +106,58 @@ void template_generator_impl::operator()(flatmessage::ast::enumeration const& en
 
     ast["enums"].push_back(obj);
 }
+struct type_visitor
+{
+    void operator()(int intValue) { myValue = intValue; }
+    void operator()(double doubleValue) { myValue = doubleValue; }
+    void operator()(std::string const& stringValue) { myValue = stringValue; }
+
+    json myValue;
+};
+
+std::string toMysqlType(std::string const& type)
+{
+    std::map<std::string, std::string> typeMap{
+        {"uint8", "TINYINT UNSIGNED"},
+        {"byte", "TINYINT UNSIGNED"},
+        {"uint16", "SMALLINT UNSIGNED"},
+        {"uint32", "INT UNSIGNED"},
+        {"uint64", "BIGINT UNSIGNED"},
+        {"int8", "TINYINT"},
+        {"int16", "SMALLINT"},
+        {"int32", "INT"},
+        {"int64", "BIGINT"},
+        {"char", "CHAR(1)"},
+        {"float", "FLOAT"},
+        {"string", "TEXT"},
+    };
+
+    if (auto itr = typeMap.find(type); itr != typeMap.end())
+        return itr->second;
+
+    return {};
+}
+
+json getAnnotations(std::vector<flatmessage::ast::annotation> const& annotations)
+{
+    json annos;
+    for (auto && annotation : annotations)
+    {
+        type_visitor v;
+        boost::apply_visitor(v, annotation.value);
+
+        annos.emplace_back(json{
+            {"name", annotation.name},
+            {"value", v.myValue}
+            }
+        );
+    }
+
+    return annos;
+}
 
 json convertAttributes(std::vector<flatmessage::ast::attribute> const& attributes)
 {
-    struct visitor
-    {
-        void operator()(int intValue) { myValue = intValue; }
-        void operator()(double doubleValue) { myValue = doubleValue; }
-        void operator()(std::string const& stringValue) { myValue = stringValue; }
-
-        json myValue;
-    };
 
     json attribs;
     for (auto&& attrib : attributes)
@@ -129,19 +170,9 @@ json convertAttributes(std::vector<flatmessage::ast::attribute> const& attribute
         if (attrib.arraySize)
             arraySize = *attrib.arraySize;
 
-        visitor v;
+        type_visitor v;
         if (attrib.defaultValue)
             boost::apply_visitor(v, *attrib.defaultValue);
-
-        visitor av;
-        if (attrib.annotation)
-            boost::apply_visitor(av, attrib.annotation->value);
-
-        json annotation;
-        if (!av.myValue.empty())
-        {
-            annotation = {{"name", attrib.annotation->name}, {"value", av.myValue}};
-        }
 
         // clang-format off
         attribs.push_back({
@@ -153,8 +184,9 @@ json convertAttributes(std::vector<flatmessage::ast::attribute> const& attribute
             {"name", attrib.name},
             {"hasDefaultValue", !v.myValue.empty()},
             {"defaultValue", v.myValue},
-            {"hasAnnotation", !av.myValue.empty()},
-            {"annotation", annotation}
+            {"hasAnnotations", !attrib.annotations.empty()},
+            {"annotations", getAnnotations (attrib.annotations)},
+            {"mysqlType", toMysqlType(attrib.type) },
         });
         // clang-format on
     }

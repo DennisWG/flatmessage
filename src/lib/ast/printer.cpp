@@ -54,25 +54,36 @@ namespace flatmessage::ast
         out << '\n';
     }
 
-    void printAnnotation(boost::optional<annotation> const& annotation, std::ostream& out)
+    void printAnnotation(std::vector<annotation> const& annotations, std::ostream& out)
     {
-        if (!annotation)
+        if (annotations.empty())
             return;
+
+        bool first = true;
         out << '[';
 
-        struct visit
+        for (auto&& annotation : annotations)
         {
-            visit(std::ostream& out) : out(out) {}
+            if (!first)
+                out << ',';
 
-            void operator()(int intValue) { out << intValue; }
-            void operator()(double doubleValue) { out << doubleValue; }
-            void operator()(std::string const& stringValue) { out << stringValue; }
+            struct visit
+            {
+                visit(std::ostream& out) : out(out) {}
 
-            std::ostream& out;
-        } v{out};
+                void operator()(int intValue) { out << intValue; }
+                void operator()(double doubleValue) { out << doubleValue; }
+                void operator()(std::string const& stringValue) { out << stringValue; }
 
-        out << annotation->name << '=';
-        boost::apply_visitor(v, annotation->value);
+                std::ostream& out;
+            } v{ out };
+
+            out << annotation.name << '=';
+            boost::apply_visitor(v, annotation.value);
+
+            first = false;
+        }
+
         out << "] ";
     }
 
@@ -107,7 +118,7 @@ namespace flatmessage::ast
             out << '[' << *attribute.arraySize << ']';
 
         out << ", ";
-        printAnnotation(attribute.annotation, out);
+        printAnnotation(attribute.annotations, out);
         out << attribute.name;
 
         printDefaultValue(attribute.defaultValue, out);

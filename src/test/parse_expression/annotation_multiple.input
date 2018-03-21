@@ -1,0 +1,8 @@
+data Character
+{
+    [Primary=1]
+    [AutoIncrement=1]
+    [NotNull=1]
+    uint32 id;
+    string name;
+}

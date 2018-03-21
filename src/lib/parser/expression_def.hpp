@@ -84,7 +84,7 @@ namespace flatmessage::parser
     auto const message_def = lit("message") > identifier > '{' > attribute_vector > '}';
 
     auto const attribute_def
-        = -annotation >> -specifier >> identifier >> -('[' > int_ > ']') > identifier > -(default_value) > ';';
+        = *annotation >> -specifier >> identifier >> -('[' > int_ > ']') > identifier > -(default_value) > ';';
 
     // TODO: unused
     auto const default_array_value_def = '{' > (default_value % ',') > '}';
