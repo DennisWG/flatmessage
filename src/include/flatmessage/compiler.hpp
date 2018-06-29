@@ -61,39 +61,39 @@ namespace flatmessage
         bool compile_files(std::vector<file_template_pair> const& files, compiler_options const& options);
     };
 
-    inline compiler_flags operator|(compiler_flags lhs, compiler_flags rhs)
+    inline compiler_flags operator|(compiler_flags lhs, compiler_flags rhs) noexcept
     {
         using T = std::underlying_type_t<compiler_flags>;
         return static_cast<compiler_flags>((static_cast<T>(lhs) | static_cast<T>(rhs)));
     }
 
-    inline compiler_flags& operator|=(compiler_flags& lhs, compiler_flags rhs)
+    inline compiler_flags& operator|=(compiler_flags& lhs, compiler_flags rhs) noexcept
     {
         using T = std::underlying_type_t<compiler_flags>;
         lhs = static_cast<compiler_flags>((static_cast<T>(lhs) | static_cast<T>(rhs)));
         return lhs;
     }
 
-    inline compiler_flags operator&(compiler_flags lhs, compiler_flags rhs)
+    inline compiler_flags operator&(compiler_flags lhs, compiler_flags rhs) noexcept
     {
         using T = std::underlying_type_t<compiler_flags>;
         return static_cast<compiler_flags>((static_cast<T>(lhs) & static_cast<T>(rhs)));
     }
 
-    inline compiler_flags& operator&=(compiler_flags& lhs, compiler_flags rhs)
+    inline compiler_flags& operator&=(compiler_flags& lhs, compiler_flags rhs) noexcept
     {
         using T = std::underlying_type_t<compiler_flags>;
         lhs = static_cast<compiler_flags>((static_cast<T>(lhs) & static_cast<T>(rhs)));
         return lhs;
     }
 
-    inline compiler_flags operator^(compiler_flags lhs, compiler_flags rhs)
+    inline compiler_flags operator^(compiler_flags lhs, compiler_flags rhs) noexcept
     {
         using T = std::underlying_type_t<compiler_flags>;
         return static_cast<compiler_flags>((static_cast<T>(lhs) ^ static_cast<T>(rhs)));
     }
 
-    inline compiler_flags& operator^=(compiler_flags& lhs, compiler_flags rhs)
+    inline compiler_flags& operator^=(compiler_flags& lhs, compiler_flags rhs) noexcept
     {
         using T = std::underlying_type_t<compiler_flags>;
         lhs = static_cast<compiler_flags>((static_cast<T>(lhs) ^ static_cast<T>(rhs)));
