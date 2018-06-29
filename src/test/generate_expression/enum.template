@@ -1,9 +1,9 @@
 {% for enum in enums
-%}Enum #{{ index1 }} - {{ enum/name }}:
+%}Enum #{{ loop/index1 }} - {{ enum/name }}:
     Alignment: {{ enum/alignment }}
     Values:{%
 for value in enum/values %}
-        #{{ index1 }} - {{ value/name }} = {{ value/value }}{%
+        #{{ loop/index1 }} - {{ value/name }} = {{ value/value }}{%
 endfor %}
 
 {% endfor %}

@@ -6,7 +6,7 @@
 {##}
 
 ## endif
-namespace {% for i in modulePath %}{% if is_first %}{{ i }}{% else %}::{{ i }}{% endif %}{% endfor %}
+namespace {% for i in modulePath %}{% if loop/is_first %}{{ i }}{% else %}::{{ i }}{% endif %}{% endfor %}
 {
 #pragma pack(push, 1)
 

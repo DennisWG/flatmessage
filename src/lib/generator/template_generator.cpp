@@ -25,6 +25,7 @@ limitations under the License.
 #include <fstream>
 #include <map>
 #include <variant>
+#include <optional>
 
 using nlohmann::json;
 
@@ -73,7 +74,18 @@ namespace flatmessage::generator
 
         return true;
     }
-} // namespace flatmessage::generator
+}
+
+template <typename F> auto doWithAnnotation(json annotations, std::string const& name, F&& f)
+{
+    for (auto&& it : annotations)
+    {
+        if (it["name"] == name)
+            return f(it);
+    }
+
+    return decltype(f({})){};
+}
 
 std::string template_generator_impl::generate(std::string const& templateCode)
 {
@@ -81,7 +93,34 @@ std::string template_generator_impl::generate(std::string const& templateCode)
     ast["hasData"] = !ast["data"].empty();
     ast["hasMessages"] = !ast["messages"].empty();
     ast["hasImports"] = !ast["imports"].empty();
-    return inja::render(templateCode, ast);
+
+    inja::Environment env;
+
+    env.add_callback("hasAnnotation", 2, [&env](inja::Parsed::Arguments args, json data) {
+        auto object = env.get_argument<json>(args, 0, data);
+        auto annotation = env.get_argument<std::string>(args, 1, data);
+
+        if (object["annotations"].empty())
+            return false;
+
+        auto annotations = object["annotations"];
+        return doWithAnnotation(annotations, annotation, [&](json const& it) { return true; });
+    });
+
+    
+    env.add_callback("annotationValue", 2, [&env](inja::Parsed::Arguments args, json data) {
+        auto object = env.get_argument<json>(args, 0, data);
+        auto annotation = env.get_argument<std::string>(args, 1, data);
+
+        if (object["annotations"].empty())
+            return json{};
+
+        auto annotations = object["annotations"];
+        return doWithAnnotation(annotations, annotation, [&](json const& it) { return it["value"]; });
+    });
+    
+
+    return env.render(templateCode, ast);
 }
 
 void template_generator_impl::operator()(flatmessage::ast::enumeration const& enumeration)
@@ -141,16 +180,12 @@ std::string toMysqlType(std::string const& type)
 json getAnnotations(std::vector<flatmessage::ast::annotation> const& annotations)
 {
     json annos;
-    for (auto && annotation : annotations)
+    for (auto&& annotation : annotations)
     {
         type_visitor v;
         boost::apply_visitor(v, annotation.value);
 
-        annos.emplace_back(json{
-            {"name", annotation.name},
-            {"value", v.myValue}
-            }
-        );
+        annos.emplace_back(json{{"name", annotation.name}, {"value", v.myValue}});
     }
 
     return annos;
@@ -158,7 +193,6 @@ json getAnnotations(std::vector<flatmessage::ast::annotation> const& annotations
 
 json convertAttributes(std::vector<flatmessage::ast::attribute> const& attributes)
 {
-
     json attribs;
     for (auto&& attrib : attributes)
     {

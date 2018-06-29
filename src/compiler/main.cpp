@@ -27,12 +27,12 @@ int main(int argc, char** argv)
 
     try
     {
-        options.parse(argc, argv);
+        auto result = options.parse(argc, argv);
 
-        auto extension = options["e"].as<std::string>();
-        auto inputs = options["i"].as<std::vector<std::string>>();
-        auto tmplate = options["t"].as<std::string>();
-        auto outDir = options["o"].as<std::string>();
+        auto extension = result["e"].as<std::string>();
+        auto inputs = result["i"].as<std::vector<std::string>>();
+        auto tmplate = result["t"].as<std::string>();
+        auto outDir = result["o"].as<std::string>();
 
         if (extension.empty() || inputs.empty() || tmplate.empty() || outDir.empty())
             return -1;

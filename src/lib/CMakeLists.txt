@@ -28,7 +28,7 @@ target_compile_features(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
-        ${PROJECT_SOURCE_DIR}/contrib/fmt
+        "${PROJECT_SOURCE_DIR}/contrib/fmt/include"
         ${PROJECT_SOURCE_DIR}/contrib/inja/src
         ${nlohmann_json_INCLUDE_DIR}
 )

@@ -1,28 +1,28 @@
 {% for enum in enums
-%}Enum #{{ index1 }} - {{ enum/name }}:
+%}Enum #{{ loop/index1 }} - {{ enum/name }}:
     Alignment: {{ enum/alignment }}
     Values:{%
 for value in enum/values %}
-        #{{ index1 }} - {{ value/name }} = {{ value/value }}{%
+        #{{ loop/index1 }} - {{ value/name }} = {{ value/value }}{%
 endfor %}
 
 {% endfor
 %}--------------------------------------------------
 
 {% for dat in data
-%}Data #{{ index1 }} - {{ dat/name }}:
+%}Data #{{ loop/index1 }} - {{ dat/name }}:
     Attributes:{%
 for attrib in dat/attributes %}
-        #{{ index1 }} - {% if attrib/hasSpecifier %}{{ attrib/specifier }}, {% endif %}{{ attrib/type }}, {{ attrib/name }}{%
+        #{{ loop/index1 }} - {% if attrib/hasSpecifier %}{{ attrib/specifier }}, {% endif %}{{ attrib/type }}, {{ attrib/name }}{%
 endfor %}
 
 {% endfor
 %}--------------------------------------------------
 
 {% for msg in messages
-%}Message #{{ index1 }} - {{ msg/name }}:
+%}Message #{{ loop/index1 }} - {{ msg/name }}:
     Attributes:{%
 for attrib in msg/attributes %}
-        #{{ index1 }} - {% if attrib/hasSpecifier %}{{ attrib/specifier }}, {% endif %}{{ attrib/type }}, {% if attrib/hasArraySize %}{{ attrib/arraySize }}, {% endif %}{{ attrib/name }}{% if attrib/hasDefaultValue %}={{ attrib/defaultValue }}{% endif %}{%
+        #{{ loop/index1 }} - {% if attrib/hasSpecifier %}{{ attrib/specifier }}, {% endif %}{{ attrib/type }}, {% if attrib/hasArraySize %}{{ attrib/arraySize }}, {% endif %}{{ attrib/name }}{% if attrib/hasDefaultValue %}={{ attrib/defaultValue }}{% endif %}{%
 endfor %}
 {% endfor %}

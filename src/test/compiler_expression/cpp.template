@@ -1,7 +1,7 @@
 #include "{{ moduleName }}.hpp"
 #include <flatmessage.hpp>
 
-using namespace {% for i in modulePath %}{% if is_first %}{{ i }}{% else %}::{{ i }}{% endif %}{% endfor %};
+using namespace {% for i in modulePath %}{% if loop/is_first %}{{ i }}{% else %}::{{ i }}{% endif %}{% endfor %};
 
 ## for dat in data
 {##}
