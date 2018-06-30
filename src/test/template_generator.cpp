@@ -66,5 +66,5 @@ DEF_TEST(GenerateInputFiles, template_generator)
         }
     }
 
-    return true;
+    return success;
 }
