@@ -22,7 +22,7 @@ namespace flatmessage::ast
     {
         using result_type = void;
 
-        visitor(std::ostream& out) : out(out) {}
+        explicit visitor(std::ostream& out) : out(out) {}
         void operator()(enum_value const& enumValue);
         void operator()(enumeration const& enumeration);
         void operator()(attribute const& attribute);
@@ -69,7 +69,7 @@ namespace flatmessage::ast
 
             struct visit
             {
-                visit(std::ostream& out) : out(out) {}
+                explicit visit(std::ostream& out) : out(out) {}
 
                 void operator()(int intValue) { out << intValue; }
                 void operator()(double doubleValue) { out << doubleValue; }
@@ -95,7 +95,7 @@ namespace flatmessage::ast
 
         struct visit
         {
-            visit(std::ostream& out) : out(out) {}
+            explicit visit(std::ostream& out) : out(out) {}
 
             void operator()(int intValue) { out << intValue; }
             void operator()(double doubleValue) { out << doubleValue; }
