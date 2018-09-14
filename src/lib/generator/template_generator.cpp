@@ -133,6 +133,16 @@ std::string template_generator_impl::generate(std::string const& templateCode)
         auto annotations = object["annotations"];
         return doWithAnnotation(annotations, annotation, [&](json const& it) { return it["value"]; });
     });
+
+    env.add_callback("hasSpecifier", 2, [&env](inja::Parsed::Arguments args, json data) {
+        auto object = env.get_argument<json>(args, 0, data);
+        auto required_specifier = env.get_argument<std::string>(args, 1, data);
+
+        if (object["specifier"].empty())
+            return false;
+
+        return object["specifier"] == required_specifier;
+    });
     
 
     return env.render(templateCode, ast);
