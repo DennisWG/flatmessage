@@ -87,6 +87,15 @@ template <typename F> auto doWithAnnotation(json annotations, std::string const&
     return decltype(f({})){};
 }
 
+struct type_visitor
+{
+    void operator()(int intValue) { myValue = intValue; }
+    void operator()(double doubleValue) { myValue = doubleValue; }
+    void operator()(std::string const& stringValue) { myValue = stringValue; }
+
+    json myValue;
+};
+
 json getAnnotations(std::vector<flatmessage::ast::annotation> const& annotations)
 {
     json annos;
@@ -172,14 +181,6 @@ void template_generator_impl::operator()(flatmessage::ast::enumeration const& en
 
     ast["enums"].push_back(obj);
 }
-struct type_visitor
-{
-    void operator()(int intValue) { myValue = intValue; }
-    void operator()(double doubleValue) { myValue = doubleValue; }
-    void operator()(std::string const& stringValue) { myValue = stringValue; }
-
-    json myValue;
-};
 
 std::string toMysqlType(std::string const& type)
 {
