@@ -183,7 +183,8 @@ json getAnnotations(std::vector<flatmessage::ast::annotation> const& annotations
     for (auto&& annotation : annotations)
     {
         type_visitor v;
-        boost::apply_visitor(v, annotation.value);
+        if (annotation.value)
+            boost::apply_visitor(v, *annotation.value);
 
         annos.emplace_back(json{{"name", annotation.name}, {"value", v.myValue}});
     }

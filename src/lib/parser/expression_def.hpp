@@ -77,11 +77,11 @@ namespace flatmessage::parser
 
     auto const default_value_def = '=' > value_def;
 
-    auto const annotation_def = '[' > identifier > default_value > ']';
+    auto const annotation_def = '[' > identifier > -default_value > ']';
 
-    auto const data_def = lit("data") > identifier > '{' > attribute_vector > '}';
+    auto const data_def = *annotation >> lit("data") > identifier > '{' > attribute_vector > '}';
 
-    auto const message_def = lit("message") > identifier > '{' > attribute_vector > '}';
+    auto const message_def = *annotation >> lit("message") > identifier > '{' > attribute_vector > '}';
 
     auto const attribute_def
         = *annotation >> -specifier >> identifier >> -('[' > int_ > ']') > identifier > -(default_value) > ';';
@@ -97,7 +97,7 @@ namespace flatmessage::parser
     auto const enum_size = x3::rule<struct enum_size_class, std::string>("enum_size")
         = string("byte") | string("word") | string("dword") | string("qword");
 
-    auto const enumeration_def = lit("enum") > identifier > ':' > enum_size > '{' > enum_value_vector > '}';
+    auto const enumeration_def = *annotation >> lit("enum") > identifier > ':' > enum_size > '{' > enum_value_vector > '}';
 
     auto const number = x3::rule<struct number_def, int>("number") = int_;
 

@@ -22,19 +22,21 @@ limitations under the License.
 
 // clang-format off
 
+BOOST_FUSION_ADAPT_STRUCT(flatmessage::ast::annotation,
+    (std::string, name)
+    (boost::optional<flatmessage::ast::annotation_value_t>, value)
+)
+
 BOOST_FUSION_ADAPT_STRUCT(flatmessage::ast::data,
+    (std::vector<flatmessage::ast::annotation>, annotations)
     (std::string, name)
     (std::vector<flatmessage::ast::attribute>, attributes)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(flatmessage::ast::message,
+    (std::vector<flatmessage::ast::annotation>, annotations)
     (std::string, name)
     (std::vector<flatmessage::ast::attribute>, attributes)
-)
-
-BOOST_FUSION_ADAPT_STRUCT(flatmessage::ast::annotation,
-    (std::string, name)
-    (flatmessage::ast::default_value_t, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(flatmessage::ast::attribute,
@@ -47,6 +49,7 @@ BOOST_FUSION_ADAPT_STRUCT(flatmessage::ast::attribute,
 )
 
 BOOST_FUSION_ADAPT_STRUCT(flatmessage::ast::enumeration,
+    (std::vector<flatmessage::ast::annotation>, annotations)
     (std::string, name)
     (std::string, alignment)
     (std::vector<flatmessage::ast::enum_value>, values)

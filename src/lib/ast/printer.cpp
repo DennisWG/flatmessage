@@ -35,25 +35,6 @@ namespace flatmessage::ast
         std::ostream& out;
     };
 
-    void flatmessage::ast::visitor::operator()(enum_value const& enumValue)
-    {
-        out << '(';
-
-        out << enumValue.name << ", ";
-        out << enumValue.value;
-
-        out << ')';
-    }
-
-    void flatmessage::ast::visitor::operator()(enumeration const& enumeration)
-    {
-        out << "enum " << enumeration.name << ':' << enumeration.alignment << ' ';
-
-        for (auto const& value : enumeration.values)
-            (*this)(value);
-        out << '\n';
-    }
-
     void printAnnotation(std::vector<annotation> const& annotations, std::ostream& out)
     {
         if (annotations.empty())
@@ -76,15 +57,39 @@ namespace flatmessage::ast
                 void operator()(std::string const& stringValue) { out << stringValue; }
 
                 std::ostream& out;
-            } v{ out };
+            } v{out};
 
-            out << annotation.name << '=';
-            boost::apply_visitor(v, annotation.value);
-
+            out << annotation.name;
+            if (annotation.value)
+            {
+                out << '=';
+                boost::apply_visitor(v, *annotation.value);
+            }
             first = false;
         }
 
         out << "] ";
+    }
+
+    void flatmessage::ast::visitor::operator()(enum_value const& enumValue)
+    {
+        out << '(';
+
+        out << enumValue.name << ", ";
+        out << enumValue.value;
+
+        out << ')';
+    }
+
+    void flatmessage::ast::visitor::operator()(enumeration const& enumeration)
+    {
+        out << "enum ";
+        printAnnotation(enumeration.annotations, out);
+        out << enumeration.name << ':' << enumeration.alignment << ' ';
+
+        for (auto const& value : enumeration.values)
+            (*this)(value);
+        out << '\n';
     }
 
     void printDefaultValue(boost::optional<default_value_t> const& defaultValue, std::ostream& out)
@@ -128,7 +133,9 @@ namespace flatmessage::ast
 
     void flatmessage::ast::visitor::operator()(message const& message)
     {
-        out << "message " << message.name << ' ';
+        out << "message ";
+        printAnnotation(message.annotations, out);
+        out << message.name << ' ';
 
         for (auto const& attribute : message.attributes)
             (*this)(attribute);
@@ -138,7 +145,9 @@ namespace flatmessage::ast
 
     void flatmessage::ast::visitor::operator()(data const& data)
     {
-        out << "data " << data.name << ' ';
+        out << "data ";
+        printAnnotation(data.annotations, out);
+        out << data.name << ' ';
 
         for (auto const& attribute : data.attributes)
             (*this)(attribute);

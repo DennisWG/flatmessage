@@ -43,7 +43,7 @@ DEF_TEST(ParseInputFiles, parse_expression)
     auto compare
         = [](fs::path inputPath, fs::path expectPath) { return testing::compare(inputPath, expectPath, parse); };
 
-    auto path = fs::current_path() / "parse_expression";
+    auto path = fs::current_path() / "../parse_expression";
 
     bool success = true;
 

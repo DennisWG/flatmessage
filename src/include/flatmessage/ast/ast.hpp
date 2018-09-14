@@ -37,26 +37,28 @@ namespace flatmessage::ast
     struct enumeration;
     struct enum_value;
 
+    using annotation_value_t = boost::variant<int, float, double, std::string>;
+    struct annotation : x3::position_tagged
+    {
+        std::string name;
+        boost::optional<annotation_value_t> value;
+    };
+
     struct data : x3::position_tagged
     {
+        std::vector<annotation> annotations;
         std::string name;
         std::vector<attribute> attributes;
     };
 
     struct message : x3::position_tagged
     {
+        std::vector<annotation> annotations;
         std::string name;
         std::vector<attribute> attributes;
     };
 
     using default_value_t = boost::variant<int, float, double, std::string>;
-
-    struct annotation : x3::position_tagged
-    {
-        std::string name;
-        boost::variant<int, float, double, std::string> value;
-    };
-
     struct attribute : x3::position_tagged
     {
         std::vector<annotation> annotations;
@@ -69,6 +71,7 @@ namespace flatmessage::ast
 
     struct enumeration : x3::position_tagged
     {
+        std::vector<annotation> annotations;
         std::string name;
         std::string alignment;
         std::vector<enum_value> values;

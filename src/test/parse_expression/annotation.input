@@ -4,3 +4,21 @@ data Character
     uint32 id;
     string name;
 }
+
+[Foobar=123]
+data Important
+{
+    int some_value;
+}
+
+[Foobar=0]
+enum Something : dword
+{
+    Abc = 1,
+}
+
+[Awesome]
+message Msg
+{
+    Important important;
+}
