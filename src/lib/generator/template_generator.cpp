@@ -87,6 +87,21 @@ template <typename F> auto doWithAnnotation(json annotations, std::string const&
     return decltype(f({})){};
 }
 
+json getAnnotations(std::vector<flatmessage::ast::annotation> const& annotations)
+{
+    json annos;
+    for (auto&& annotation : annotations)
+    {
+        type_visitor v;
+        if (annotation.value)
+            boost::apply_visitor(v, *annotation.value);
+
+        annos.emplace_back(json{{"name", annotation.name}, {"value", v.myValue}});
+    }
+
+    return annos;
+}
+
 std::string template_generator_impl::generate(std::string const& templateCode)
 {
     ast["hasEnums"] = !ast["enums"].empty();
@@ -139,7 +154,9 @@ void template_generator_impl::operator()(flatmessage::ast::enumeration const& en
     json obj {
         {"name", enumeration.name},
         {"alignment",enumeration.alignment},
-        {"values", values}
+        {"values", values},
+        {"hasAnnotations", !enumeration.annotations.empty()},
+        {"annotations", getAnnotations (enumeration.annotations)},
     };
     // clang-format on
 
@@ -175,21 +192,6 @@ std::string toMysqlType(std::string const& type)
         return itr->second;
 
     return {};
-}
-
-json getAnnotations(std::vector<flatmessage::ast::annotation> const& annotations)
-{
-    json annos;
-    for (auto&& annotation : annotations)
-    {
-        type_visitor v;
-        if (annotation.value)
-            boost::apply_visitor(v, *annotation.value);
-
-        annos.emplace_back(json{{"name", annotation.name}, {"value", v.myValue}});
-    }
-
-    return annos;
 }
 
 json convertAttributes(std::vector<flatmessage::ast::attribute> const& attributes)
@@ -234,7 +236,9 @@ void template_generator_impl::operator()(flatmessage::ast::message const& messag
     // clang-format off
     json obj {
         {"name", message.name},
-        {"attributes", convertAttributes(message.attributes)}
+        {"attributes", convertAttributes(message.attributes)},
+        {"hasAnnotations", !message.annotations.empty()},
+        {"annotations", getAnnotations (message.annotations)},
     };
     // clang-format on
 
@@ -246,7 +250,9 @@ void template_generator_impl::operator()(flatmessage::ast::data const& data)
     // clang-format off
     json obj {
         {"name", data.name},
-        {"attributes", convertAttributes(data.attributes)}
+        {"attributes", convertAttributes(data.attributes)},
+        {"hasAnnotations", !data.annotations.empty()},
+        {"annotations", getAnnotations (data.annotations)},
     };
     // clang-format on
 
