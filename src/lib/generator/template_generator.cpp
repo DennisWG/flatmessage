@@ -197,6 +197,7 @@ std::string toMysqlType(std::string const& type)
         {"char", "CHAR(1)"},
         {"float", "FLOAT"},
         {"string", "TEXT"},
+        {"bool", "BOOLEAN"},
     };
 
     if (auto itr = typeMap.find(type); itr != typeMap.end())

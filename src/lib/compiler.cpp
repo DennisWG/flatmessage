@@ -69,6 +69,7 @@ namespace flatmessage
                     buildin_types.insert("int64");
                     buildin_types.insert("float");
                     buildin_types.insert("string");
+                    buildin_types.insert("bool");
                 }
 
                 void operator()(flatmessage::ast::enumeration const& enumeration)
