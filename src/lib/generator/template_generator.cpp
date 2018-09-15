@@ -22,7 +22,7 @@ limitations under the License.
 #include <inja.hpp>
 // clang-format on
 
-#include <fstream>
+#include <filesystem>
 #include <map>
 #include <variant>
 #include <optional>
@@ -33,7 +33,7 @@ struct template_generator_impl
 {
     using result_type = void;
 
-    std::string generate(std::string const& templateCode);
+    std::string generate(std::string const& templatePath);
 
     void operator()(flatmessage::ast::enumeration const& enumeration);
     void operator()(flatmessage::ast::message const& message);
@@ -55,12 +55,8 @@ struct template_generator_impl
 namespace flatmessage::generator
 {
     template_generator::template_generator(std::string const& template_file_path)
+        : _template{template_file_path}
     {
-        std::ifstream file(template_file_path);
-        if (!file)
-            throw std::exception{("Invalid file path \"" + template_file_path + "\"").c_str()};
-
-        _template = std::string{(std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>()};
     }
 
     bool template_generator::generate(std::ostream& out, flatmessage::ast::ast const& ast)
@@ -74,7 +70,7 @@ namespace flatmessage::generator
 
         return true;
     }
-}
+} // namespace flatmessage::generator
 
 template <typename F> auto doWithAnnotation(json annotations, std::string const& name, F&& f)
 {
@@ -111,14 +107,39 @@ json getAnnotations(std::vector<flatmessage::ast::annotation> const& annotations
     return annos;
 }
 
-std::string template_generator_impl::generate(std::string const& templateCode)
+std::string toMysqlType(std::string const& type)
+{
+    std::map<std::string, std::string> typeMap{
+        {"uint8", "TINYINT UNSIGNED"},
+        {"byte", "TINYINT UNSIGNED"},
+        {"uint16", "SMALLINT UNSIGNED"},
+        {"uint32", "INT UNSIGNED"},
+        {"uint64", "BIGINT UNSIGNED"},
+        {"int8", "TINYINT"},
+        {"int16", "SMALLINT"},
+        {"int32", "INT"},
+        {"int64", "BIGINT"},
+        {"char", "CHAR(1)"},
+        {"float", "FLOAT"},
+        {"string", "TEXT"},
+        {"bool", "BOOLEAN"},
+    };
+
+    if (auto itr = typeMap.find(type); itr != typeMap.end())
+        return itr->second;
+
+    return {};
+}
+
+std::string template_generator_impl::generate(std::string const& templatePath)
 {
     ast["hasEnums"] = !ast["enums"].empty();
     ast["hasData"] = !ast["data"].empty();
     ast["hasMessages"] = !ast["messages"].empty();
     ast["hasImports"] = !ast["imports"].empty();
 
-    inja::Environment env;
+    auto path = std::filesystem::path(templatePath);
+    inja::Environment env{path.parent_path().string() + '/'};
 
     env.add_callback("hasAnnotation", 2, [&env](inja::Parsed::Arguments args, json data) {
         auto object = env.get_argument<json>(args, 0, data);
@@ -131,7 +152,6 @@ std::string template_generator_impl::generate(std::string const& templateCode)
         return doWithAnnotation(annotations, annotation, [&](json const& it) { return true; });
     });
 
-    
     env.add_callback("annotationValue", 2, [&env](inja::Parsed::Arguments args, json data) {
         auto object = env.get_argument<json>(args, 0, data);
         auto annotation = env.get_argument<std::string>(args, 1, data);
@@ -152,9 +172,26 @@ std::string template_generator_impl::generate(std::string const& templateCode)
 
         return object["specifier"] == required_specifier;
     });
-    
 
-    return env.render(templateCode, ast);
+    env.add_callback("isUserDefined", 1, [&env](inja::Parsed::Arguments args, json data) {
+        auto type = env.get_argument<std::string>(args, 0, data);
+        return toMysqlType(type).empty();
+    });
+
+    env.add_callback("isUserDefinedData", 1, [&](inja::Parsed::Arguments args, json data) {
+        auto type = env.get_argument<std::string>(args, 0, data);
+        auto enums = ast["enums"];
+
+        for (auto&& enum_ : enums)
+        {
+            if (enum_["name"] == type)
+                return false;
+        }
+
+        return toMysqlType(type).empty();
+    });
+
+    return env.render_file(path.filename().string(), ast);
 }
 
 void template_generator_impl::operator()(flatmessage::ast::enumeration const& enumeration)
@@ -180,30 +217,6 @@ void template_generator_impl::operator()(flatmessage::ast::enumeration const& en
     // clang-format on
 
     ast["enums"].push_back(obj);
-}
-
-std::string toMysqlType(std::string const& type)
-{
-    std::map<std::string, std::string> typeMap{
-        {"uint8", "TINYINT UNSIGNED"},
-        {"byte", "TINYINT UNSIGNED"},
-        {"uint16", "SMALLINT UNSIGNED"},
-        {"uint32", "INT UNSIGNED"},
-        {"uint64", "BIGINT UNSIGNED"},
-        {"int8", "TINYINT"},
-        {"int16", "SMALLINT"},
-        {"int32", "INT"},
-        {"int64", "BIGINT"},
-        {"char", "CHAR(1)"},
-        {"float", "FLOAT"},
-        {"string", "TEXT"},
-        {"bool", "BOOLEAN"},
-    };
-
-    if (auto itr = typeMap.find(type); itr != typeMap.end())
-        return itr->second;
-
-    return {};
 }
 
 json convertAttributes(std::vector<flatmessage::ast::attribute> const& attributes)
