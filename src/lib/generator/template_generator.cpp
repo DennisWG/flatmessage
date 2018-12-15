@@ -24,6 +24,7 @@ limitations under the License.
 
 #include <filesystem>
 #include <map>
+#include <unordered_set>
 #include <variant>
 #include <optional>
 
@@ -33,7 +34,8 @@ struct template_generator_impl
 {
     using result_type = void;
 
-    std::string generate(std::string const& templatePath);
+    std::string generate(std::string const& templatePath, std::unordered_set<std::string> const& exported_enums,
+                         std::unordered_set<std::string> const& exported_data);
 
     void operator()(flatmessage::ast::enumeration const& enumeration);
     void operator()(flatmessage::ast::message const& message);
@@ -54,19 +56,18 @@ struct template_generator_impl
 
 namespace flatmessage::generator
 {
-    template_generator::template_generator(std::string const& template_file_path)
-        : _template{template_file_path}
-    {
-    }
+    template_generator::template_generator(std::string const& template_file_path) : _template{template_file_path} {}
 
-    bool template_generator::generate(std::ostream& out, flatmessage::ast::ast const& ast)
+    bool template_generator::generate(std::ostream& out, flatmessage::ast::ast const& ast,
+                                      std::unordered_set<std::string> const& exported_enums,
+                                      std::unordered_set<std::string> const& exported_data)
     {
         template_generator_impl v;
 
         for (auto const& ast_ : ast)
             boost::apply_visitor(v, ast_);
 
-        out << v.generate(_template);
+        out << v.generate(_template, exported_enums, exported_data);
 
         return true;
     }
@@ -131,7 +132,9 @@ std::string toMysqlType(std::string const& type)
     return {};
 }
 
-std::string template_generator_impl::generate(std::string const& templatePath)
+std::string template_generator_impl::generate(std::string const& templatePath,
+                                              std::unordered_set<std::string> const& exported_enums,
+                                              std::unordered_set<std::string> const& exported_data)
 {
     ast["hasEnums"] = !ast["enums"].empty();
     ast["hasData"] = !ast["data"].empty();
@@ -173,10 +176,18 @@ std::string template_generator_impl::generate(std::string const& templatePath)
         return object["specifier"] == required_specifier;
     });
 
-    env.add_callback("isUserDefined", 1, [&env](inja::Parsed::Arguments args, json data) {
-        auto type = env.get_argument<std::string>(args, 0, data);
-        return toMysqlType(type).empty();
-    });
+    env.add_callback("isUserDefined", 1,
+                     [&env, &exported_enums, &exported_data](inja::Parsed::Arguments args, json data) {
+                         auto type = env.get_argument<std::string>(args, 0, data);
+
+                         if (exported_enums.find(type) != exported_enums.end())
+                             return false;
+
+                         if (exported_data.find(type) != exported_data.end())
+                             return false;
+
+                         return toMysqlType(type).empty();
+                     });
 
     env.add_callback("isUserDefinedData", 1, [&](inja::Parsed::Arguments args, json data) {
         auto type = env.get_argument<std::string>(args, 0, data);
@@ -187,6 +198,12 @@ std::string template_generator_impl::generate(std::string const& templatePath)
             if (enum_["name"] == type)
                 return false;
         }
+
+        if (exported_enums.find(type) != exported_enums.end())
+            return false;
+
+        if (exported_data.find(type) != exported_data.end())
+            return true;
 
         return toMysqlType(type).empty();
     });

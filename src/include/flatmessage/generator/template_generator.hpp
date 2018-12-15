@@ -29,7 +29,9 @@ namespace flatmessage
             // Constructs the template_generator by parsing the given template_file_path
             template_generator(std::string const& template_file_path);
             // Generates the code from the given ast and writes it into the given stream
-            bool generate(std::ostream& stream, ast::ast const& ast) override;
+            bool generate(std::ostream& stream, ast::ast const& ast,
+                          std::unordered_set<std::string> const& exported_enums,
+                          std::unordered_set<std::string> const& exported_data) override;
 
           private:
             std::string _template;

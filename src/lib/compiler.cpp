@@ -43,6 +43,8 @@ namespace flatmessage
         std::vector<std::string> imported_modules;
         // The protocol this translation unit represents
         std::string protocol;
+        // A list of 'enum's that the translation unit exports when imported
+        std::vector<std::string> exported_enums;
         // A list of 'data' structures that the translation unit exports when imported
         std::vector<std::string> exported_types;
         // A list of 'data' structures that the translation unit imports from other modules
@@ -80,6 +82,8 @@ namespace flatmessage
                     if (found_data_types.find(enumeration.name) != found_data_types.end())
                         return;
 
+                    exported_enums.push_back(enumeration.name);
+
                     found_data_types.insert(enumeration.name);
                 }
                 void operator()(flatmessage::ast::attribute const& attribute)
@@ -114,7 +118,7 @@ namespace flatmessage
 
                 std::unordered_set<std::string> buildin_types, found_data_types;
                 std::string module, protocol;
-                std::vector<std::string> imported_modules, exported_types, imported_types;
+                std::vector<std::string> imported_modules, exported_enums, exported_types, imported_types;
             } v;
 
             for (auto& elem : ast)
@@ -123,6 +127,7 @@ namespace flatmessage
             module = std::move(v.module);
             protocol = std::move(v.protocol);
             imported_modules = std::move(v.imported_modules);
+            exported_enums = std::move(v.exported_enums);
             exported_types = std::move(v.exported_types);
             imported_types = std::move(v.imported_types);
         }
@@ -176,6 +181,11 @@ namespace flatmessage
 
         // Stores translation_units by their module names
         std::unordered_map<std::string, translation_unit> _modules;
+        
+        // A set of known enums. These are being exported by the translation units
+        std::unordered_set<std::string> _known_enums;
+        // A set of known data types. These are being exported by the translation units
+        std::unordered_set<std::string> _known_data;
 
       public:
         // Parses the given list of files using the given options and returns the list of parsed translation units
@@ -229,7 +239,11 @@ namespace flatmessage
                     return false;
                 }
 
+                exported_types.insert(translation_unit.exported_enums.begin(), translation_unit.exported_enums.end());
                 exported_types.insert(translation_unit.exported_types.begin(), translation_unit.exported_types.end());
+
+                _known_data.insert(translation_unit.exported_types.begin(), translation_unit.exported_types.end());
+                _known_enums.insert(translation_unit.exported_enums.begin(), translation_unit.exported_enums.end());
             }
 
             // Second pass - this->_modules has been populated
@@ -245,6 +259,7 @@ namespace flatmessage
                 {
                     error(translation_unit, fmt::format("Undefined data type '{0}'", name));
                     return false;
+#
                 }
             }
 
@@ -268,7 +283,7 @@ namespace flatmessage
                 std::ofstream out_file(out_file_path.c_str());
 
                 flatmessage::generator::template_generator generator(translation_unit.template_path.string());
-                generator.generate(out_file, translation_unit.ast);
+                generator.generate(out_file, translation_unit.ast, _known_enums, _known_data);
             }
         }
     };
@@ -294,7 +309,7 @@ namespace flatmessage
 
         if (!impl.semantic_analyze(translation_units))
             return false;
-
+        
         impl.generate_code(translation_units, options.output_path, options.file_extension);
         return true;
     }

@@ -18,13 +18,18 @@ limitations under the License.
 
 #include "../ast/ast.hpp"
 
+#include <unordered_set>
+
 namespace flatmessage
 {
     namespace generator
     {
         struct generator
         {
-            virtual bool generate(std::ostream& out, ast::ast const& ast) = 0;
+            virtual bool generate(std::ostream& out, ast::ast const& ast,
+                                  std::unordered_set<std::string> const& exported_enums,
+                                  std::unordered_set<std::string> const& exported_data)
+                = 0;
         };
     }
 }
