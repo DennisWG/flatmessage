@@ -208,6 +208,26 @@ std::string template_generator_impl::generate(std::string const& templatePath,
         return toMysqlType(type).empty();
     });
 
+    env.add_callback("getAnnotationsWithName", 2, [&](inja::Parsed::Arguments args, json data) {
+        auto object = env.get_argument<json>(args, 0, data);
+        auto name = env.get_argument<std::string>(args, 1, data);
+
+        json annotations;
+
+        if (object["attributes"].empty())
+            return annotations;
+
+        for (auto&& attribute : object["attributes"])
+        {
+            doWithAnnotation(attribute["annotations"], name, [&](json const& annotation) {
+                annotations.emplace_back(annotation["value"]);
+                return 1;
+            });
+        }
+
+        return annotations;
+    });
+
     return env.render_file(path.filename().string(), ast);
 }
 

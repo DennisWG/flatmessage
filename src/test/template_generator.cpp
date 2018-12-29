@@ -36,7 +36,8 @@ auto template_generate = [](std::string const& source, fs::path inputPath) {
         flatmessage::generator::template_generator generator((path / fileName).string());
         std::stringstream out;
 
-        generator.generate(out, *ast);
+        std::unordered_set<std::string> exported_stuff;
+        generator.generate(out, *ast, exported_stuff, exported_stuff);
         return out.str();
     }
 

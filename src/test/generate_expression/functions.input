@@ -1,0 +1,23 @@
+[anno]
+enum SomeEnum : word
+{
+    A = 1,
+    B = 2,
+}
+
+data SomeData
+{
+    repeated int SomeInts;
+    float SomeFloat;
+}
+
+[anno="test"]
+message SomeMessage
+{
+    [foo=1]
+    SomeData MyData;
+    [foo=2]
+    SomeEnum MyEnum;
+    [foo=3]
+    float MyFloat;
+}
