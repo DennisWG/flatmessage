@@ -27,8 +27,8 @@ ud
 , udd
 ## endif
 ) 
-## endfor
-## for value in getAnnotationsWithName(msg, "foo")
+## for value in getAnnotationsWithName(attrib, "foo")
 {{ value }} 
+## endfor
 ## endfor
 ## endfor

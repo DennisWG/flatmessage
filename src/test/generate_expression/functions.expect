@@ -1,3 +1,3 @@
 Enum SomeEnum, anno(), word, A B 
 true false 
-test, SomeMessage, MyData(ud, udd) MyEnum(ud) MyFloat() 1 2 3 
+test, SomeMessage, MyData(ud, udd) 1 MyEnum(ud) 2 MyFloat() 3 
