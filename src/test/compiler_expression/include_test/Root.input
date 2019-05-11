@@ -1,0 +1,8 @@
+module Test.Root;
+
+import Test.Include;
+
+message Root
+{
+	repeated SomeData data;
+}

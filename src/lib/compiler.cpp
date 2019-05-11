@@ -28,6 +28,18 @@ namespace flatmessage
 {
     namespace fs = boost::filesystem;
 
+    // Returns a list of paths with all .input files that can be found in the working_folder
+    std::vector<fs::path> get_all_files_from(fs::path const& directory)
+    {
+        std::vector<fs::path> result;
+
+        auto range = boost::make_iterator_range(fs::directory_iterator(directory), {});
+        for (auto& entry : range)
+            result.emplace_back(entry.path());
+
+        return result;
+    }
+
     // Representation of a translation unit
     struct translation_unit
     {
@@ -49,6 +61,8 @@ namespace flatmessage
         std::vector<std::string> exported_types;
         // A list of 'data' structures that the translation unit imports from other modules
         std::vector<std::string> imported_types;
+        // Should this file be build?
+        bool build = true;
 
         translation_unit() = default;
         translation_unit(flatmessage::ast::ast const& ast) : ast(ast)
@@ -190,35 +204,49 @@ namespace flatmessage
       public:
         // Parses the given list of files using the given options and returns the list of parsed translation units
         // TODO: implement threading
-        std::vector<translation_unit> parse_files(std::vector<flatmessage::file_template_pair> const& files,
+        std::vector<translation_unit> parse_files(std::vector<boost::filesystem::path> const& files,
                                                   compiler_options const& options)
         {
             std::vector<translation_unit> translation_units;
 
-            // TODO: implement threading
-            for (auto& entry : files)
-            {
-                std::string error_message;
-                auto ast = parser::parse_file(entry.input_file, error_message);
-                if (!error_message.empty())
-                    throw std::exception(error_message.c_str());
+            auto parse
+                = [&](boost::filesystem::path const& path, boost::filesystem::path const& template_path, bool build) {
+                      std::string error_message;
+                      auto ast = parser::parse_file(path, error_message);
+                      if (!error_message.empty())
+                          throw std::exception(error_message.c_str());
 
-                using cf = compiler_flags;
+                      using cf = compiler_flags;
 
-                if (translation_units.size() > 0
-                    && (options.flags & cf::merge_translation_units) == cf::merge_translation_units)
+                      if (translation_units.size() > 0
+                          && (options.flags & cf::merge_translation_units) == cf::merge_translation_units)
+                      {
+                          translation_unit& tu = *translation_units.begin();
+                          tu.build = build;
+                          tu.ast.insert(tu.ast.end(), ast->begin(), ast->end());
+                      }
+                      else
+                      {
+                          translation_unit tu{*ast};
+                          tu.file_path = path;
+                          tu.template_path = template_path;
+                          tu.build = build;
+                          translation_units.emplace_back(std::move(tu));
+                      }
+                  };
+
+            auto parse_files = [&](std::vector<fs::path> const& files, bool build) {
+                // TODO: implement threading
+                for (auto& entry : files)
                 {
-                    translation_unit& tu = *translation_units.begin();
-                    tu.ast.insert(tu.ast.end(), ast->begin(), ast->end());
+                    parse(entry, options.template_file, build);
                 }
-                else
-                {
-                    translation_unit tu{*ast};
-                    tu.file_path = entry.input_file;
-                    tu.template_path = entry.template_file;
-                    translation_units.emplace_back(std::move(tu));
-                }
-            }
+            };
+
+            for (auto& include_directory : options.include_directories)
+                parse_files(get_all_files_from(include_directory), false);
+
+            parse_files(files, true);
 
             return translation_units;
         }
@@ -273,6 +301,9 @@ namespace flatmessage
             // TODO: implement threading
             for (auto& translation_unit : translation_units)
             {
+                if (!translation_unit.build)
+                    continue;
+
                 auto file_name = translation_unit.file_path.stem();
                 boost::filesystem::path out_file_path
                     = fmt::format("{0}/{1}.{2}", output_path.string(), file_name.string(), file_extension);
@@ -301,7 +332,7 @@ namespace flatmessage
         return tu;
     }
 
-    bool compiler::compile_files(std::vector<file_template_pair> const& files, compiler_options const& options)
+    bool compiler::compile_files(std::vector<fs::path> const& files, compiler_options const& options)
     {
         compiler_impl impl;
 

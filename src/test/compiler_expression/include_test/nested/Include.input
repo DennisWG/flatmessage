@@ -1,0 +1,7 @@
+module Test.Include;
+
+data SomeData
+{
+	uint8 id;
+	uint32 number;
+}

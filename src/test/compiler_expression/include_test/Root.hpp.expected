@@ -1,0 +1,14 @@
+#include "Include.hpp"
+
+namespace Test
+{
+#pragma pack(push, 1)
+
+    class Root
+    {
+    public:
+        std::vector<SomeData> data;
+    };
+
+#pragma pop
+}

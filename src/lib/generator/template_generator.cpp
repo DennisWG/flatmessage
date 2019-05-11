@@ -214,16 +214,13 @@ std::string template_generator_impl::generate(std::string const& templatePath,
 
         json annotations;
 
-        if (object["attributes"].empty())
+        if (object["annotations"].empty())
             return annotations;
 
-        for (auto&& attribute : object["attributes"])
-        {
-            doWithAnnotation(attribute["annotations"], name, [&](json const& annotation) {
-                annotations.emplace_back(annotation["value"]);
-                return 1;
-            });
-        }
+        doWithAnnotation(object["annotations"], name, [&](json const& annotation) {
+            annotations.emplace_back(annotation["value"]);
+            return 1;
+        });
 
         return annotations;
     });

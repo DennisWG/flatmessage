@@ -43,18 +43,10 @@ std::vector<fs::path> get_test_files()
 }
 
 // Compiles the given file_paths with the given template_name and the given options. Returns whether it succeeded
-bool compile_with(std::vector<fs::path> const& file_paths, std::string const& template_name,
-                  flatmessage::compiler_options const& options)
+bool compile_with(std::vector<fs::path> const& file_paths, flatmessage::compiler_options const& options)
 {
-    std::vector<flatmessage::file_template_pair> compiler_input;
-    for (auto& path : file_paths)
-    {
-        auto directory = path.parent_path();
-        compiler_input.push_back({path, directory / template_name});
-    }
-
     flatmessage::compiler compiler;
-    return compiler.compile_files(compiler_input, options);
+    return compiler.compile_files(file_paths, options);
 }
 
 // Returns whether the given file_name's content matches its .expected counter part
@@ -118,25 +110,51 @@ bool test_output(std::vector<fs::path> const& file_paths, std::vector<std::strin
     return true;
 }
 
+// Compiling multiple files with different templates should generate them accordingly
 DEF_TEST(compile_many, compiler)
 {
+    using cf = flatmessage::compiler_flags;
+
     auto files = get_test_files();
-    EXPECT(compile_with(files, "cpp.template", {1, working_folder, "cpp"}));
-    EXPECT(compile_with(files, "hpp.template", {1, working_folder, "hpp"}));
+    EXPECT(compile_with(files, {working_folder / "cpp.template", 1, working_folder, "cpp", cf::none}));
+    EXPECT(compile_with(files, {working_folder / "hpp.template", 1, working_folder, "hpp", cf::none}));
 
     EXPECT(test_output(files, {"cpp", "hpp"}));
 
     return true;
 }
 
+// Compiling multiple files with merge flag set should generate only one big file
 DEF_TEST(compiler_merge_translation_units, compiler)
 {
     using cf = flatmessage::compiler_flags;
 
     auto files = get_test_files();
-    EXPECT(compile_with(files, "merged.template", {1, working_folder, "dmp", cf::merge_translation_units}));
+    EXPECT(compile_with(files,
+                        {working_folder / "merged.template", 1, working_folder, "dmp", cf::merge_translation_units}));
 
     EXPECT(test_one(*files.begin(), "dmp"));
 
+    return true;
+}
+
+// Compiling with included files from different directories should generate only our files
+DEF_TEST(compiler_include_directories, compiler)
+{
+    using cf = flatmessage::compiler_flags;
+
+    fs::path include_dir = working_folder / "include_test/nested";
+    fs::path root_file = working_folder / "include_test/Root.input";
+
+    EXPECT(compile_with(
+        {root_file},
+        {working_folder / "hpp.template", 1, working_folder / "include_test", "hpp", cf::none, {include_dir}}));
+
+    EXPECT(test_one(root_file, "hpp"));
+
+    // Files from the include directory should't be build
+    namespace test = boost::spirit::x3::testing;
+    EXPECT(test::load(working_folder / "include_test/nested/Include.hpp").empty());
+    
     return true;
 }
