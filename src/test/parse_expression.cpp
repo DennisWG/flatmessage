@@ -23,6 +23,8 @@ limitations under the License.
 
 #include <boost/variant.hpp>
 
+#include <format>
+
 namespace fs = boost::filesystem;
 namespace testing = boost::spirit::x3::testing;
 

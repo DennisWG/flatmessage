@@ -17,7 +17,7 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_23)
 target_include_directories(${PROJECT_NAME}
     PRIVATE
         "${PROJECT_SOURCE_DIR}/contrib/fmt/include"
-        ${PROJECT_SOURCE_DIR}/contrib/inja/src
+        "${PROJECT_SOURCE_DIR}/contrib/inja/src"
 )
 
 target_link_libraries(${PROJECT_NAME}

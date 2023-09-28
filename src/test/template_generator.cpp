@@ -18,11 +18,12 @@ limitations under the License.
 
 #include <testinator.h>
 
-#include <format>
 
 #include <flatmessage/ast/printer.hpp>
 #include <flatmessage/generator/template_generator.hpp>
 #include <flatmessage/parser.hpp>
+
+#include <format>
 
 namespace fs = boost::filesystem;
 namespace testing = boost::spirit::x3::testing;
