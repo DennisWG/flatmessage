@@ -23,7 +23,7 @@ limitations under the License.
 
 #include <boost/variant.hpp>
 
-#include <format>
+#include <fmt/format.h>
 
 namespace fs = boost::filesystem;
 namespace testing = boost::spirit::x3::testing;
@@ -71,7 +71,7 @@ DEF_TEST(ParseInputFiles, parse_expression)
         }
     }
 
-    std::cout << std::format("Parsed {} templates. Successful: {}, Errors: {}", successful + errors, successful, errors)
+    std::cout << fmt::format("Parsed {} templates. Successful: {}, Errors: {}", successful + errors, successful, errors)
               << std::endl;
 
     return success;

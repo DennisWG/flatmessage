@@ -9,7 +9,9 @@ add_executable (test_${PROJECT_NAME}
 
 target_link_libraries(test_${PROJECT_NAME} ${PROJECT_NAME} Boost::filesystem Boost::regex Boost::system)
 
-target_include_directories(test_${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/contrib/testinator/src/include)
+target_include_directories(test_${PROJECT_NAME} PRIVATE
+        "${PROJECT_SOURCE_DIR}/contrib/testinator/src/include"
+        "${PROJECT_SOURCE_DIR}/contrib/fmt/include")
 
 target_compile_definitions(test_${PROJECT_NAME} 
     PRIVATE FMT_HEADER_ONLY=1

@@ -23,7 +23,7 @@ limitations under the License.
 #include <flatmessage/generator/template_generator.hpp>
 #include <flatmessage/parser.hpp>
 
-#include <format>
+#include <fmt/format.h>
 
 namespace fs = boost::filesystem;
 namespace testing = boost::spirit::x3::testing;
@@ -78,7 +78,7 @@ DEF_TEST(GenerateInputFiles, template_generator)
         }
     }
 
-    std::cout << std::format("Generated {} templates. Successful: {}, Errors: {}", successful + errors, successful,
+    std::cout << fmt::format("Generated {} templates. Successful: {}, Errors: {}", successful + errors, successful,
                              errors)
               << std::endl;
 
