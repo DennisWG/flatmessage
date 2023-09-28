@@ -14,3 +14,6 @@ target_compile_definitions(${PROJECT_NAME}_compiler
 )
 
 target_compile_features(${PROJECT_NAME}_compiler PRIVATE cxx_std_23)
+
+
+install(TARGETS ${PROJECT_NAME}_compiler DESTINATION ${CMAKE_INSTALL_PREFIX})
