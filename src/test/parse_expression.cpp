@@ -14,12 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "testing.hpp"
+
 #include <flatmessage/ast/printer.hpp>
 #include <flatmessage/parser.hpp>
 
 #include <testinator.h>
 
-#include <boost/spirit/home/x3/support/utility/testing.hpp>
 #include <boost/variant.hpp>
 
 namespace fs = boost::filesystem;
@@ -34,7 +35,7 @@ auto parse = [](std::string const& source, fs::path inputPath) {
         flatmessage::ast::print(out, *ast);
         return out.str();
     }
-    
+
     return error_message;
 };
 
@@ -47,6 +48,7 @@ DEF_TEST(ParseInputFiles, parse_expression)
 
     bool success = true;
 
+    int successful = 0, errors = 0;
     for (auto i = fs::directory_iterator(path); i != fs::directory_iterator(); ++i)
     {
         auto ext = fs::extension(i->path());
@@ -56,9 +58,19 @@ DEF_TEST(ParseInputFiles, parse_expression)
             auto expect_path = input_path;
             expect_path.replace_extension(".expect");
             if (!compare(input_path, expect_path))
+            {
+                ++errors;
                 success = false;
+            }
+            else
+            {
+                ++successful;
+            }
         }
     }
+
+    std::cout << std::format("Parsed {} templates. Successful: {}, Errors: {}", successful + errors, successful, errors)
+              << std::endl;
 
     return success;
 }

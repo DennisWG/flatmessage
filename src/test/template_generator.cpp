@@ -14,13 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "testing.hpp"
+
 #include <testinator.h>
+
+#include <format>
 
 #include <flatmessage/ast/printer.hpp>
 #include <flatmessage/generator/template_generator.hpp>
 #include <flatmessage/parser.hpp>
-
-#include <boost/spirit/home/x3/support/utility/testing.hpp>
 
 namespace fs = boost::filesystem;
 namespace testing = boost::spirit::x3::testing;
@@ -54,6 +56,7 @@ DEF_TEST(GenerateInputFiles, template_generator)
 
     bool success = true;
 
+    int successful = 0, errors = 0;
     for (auto i = fs::directory_iterator(path); i != fs::directory_iterator(); ++i)
     {
         auto ext = fs::extension(i->path());
@@ -63,9 +66,20 @@ DEF_TEST(GenerateInputFiles, template_generator)
             auto expect_path = input_path;
             expect_path.replace_extension(".expect");
             if (!compare(input_path, expect_path))
+            {
+                ++errors;
                 success = false;
+            }
+            else
+            {
+                ++successful;
+            }
         }
     }
+
+    std::cout << std::format("Generated {} templates. Successful: {}, Errors: {}", successful + errors, successful,
+                             errors)
+              << std::endl;
 
     return success;
 }

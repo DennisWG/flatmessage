@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7.0)
+cmake_minimum_required(VERSION 3.25.0)
 project(flatmessage)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -6,13 +6,19 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 include_directories (${PROJECT_SOURCE_DIR}/src/include)
 
+include(FetchContent)
+
+#find_package(Boost 1.63 COMPONENTS filesystem regex system REQUIRED)
+
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.63 COMPONENTS filesystem regex system REQUIRED)
-add_library(boost INTERFACE IMPORTED)
-set_property(TARGET boost
-    PROPERTY
-        INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
+set(BOOST_IOSTREAMS_ENABLE_ZLIB OFF)
+
+FetchContent_Declare(
+  Boost
+  GIT_REPOSITORY https://github.com/boostorg/boost.git
+  GIT_TAG boost-1.83.0
 )
+FetchContent_MakeAvailable(Boost)
 
 # Testing
 include(CTest)

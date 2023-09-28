@@ -8,6 +8,9 @@
 
 #include <boost/filesystem.hpp>
 
+#include <sstream>
+#include <fstream>
+
 namespace flatmessage::parser
 {
     std::optional<ast::ast> parse_string(std::string const & content, std::string& out_error, std::string const& source)

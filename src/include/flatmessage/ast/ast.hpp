@@ -23,6 +23,7 @@ limitations under the License.
 
 #include <list>
 #include <vector>
+#include <ostream>
 
 namespace flatmessage::ast
 {
@@ -37,7 +38,7 @@ namespace flatmessage::ast
     struct enumeration;
     struct enum_value;
 
-    using annotation_value_t = boost::variant<int, float, double, std::string>;
+    using annotation_value_t = x3::variant<int, double, std::string>;
     struct annotation : x3::position_tagged
     {
         std::string name;
@@ -58,7 +59,7 @@ namespace flatmessage::ast
         std::vector<attribute> attributes;
     };
 
-    using default_value_t = boost::variant<int, float, double, std::string>;
+    using default_value_t = x3::variant<int, double, std::string>;
     struct attribute : x3::position_tagged
     {
         std::vector<annotation> annotations;
@@ -98,7 +99,7 @@ namespace flatmessage::ast
         std::string name;
     };
 
-    using ast = std::vector<boost::variant<message, enumeration, data, module_decl, import_decl, protocol_decl>>;
+    using ast = std::vector<x3::variant<message, enumeration, data, module_decl, import_decl, protocol_decl>>;
 
     // print functions for debugging
     inline std::ostream& operator<<(std::ostream& out, nil)

@@ -19,6 +19,17 @@ limitations under the License.
 #include <flatmessage/ast/ast.hpp>
 
 #include <boost/fusion/include/adapt_struct.hpp>
+#include <boost/fusion/adapted/std_array.hpp>
+#include <boost/fusion/include/std_array.hpp>
+#include <boost/fusion/adapted/std_pair.hpp>
+#include <boost/fusion/include/std_pair.hpp>
+#include <boost/fusion/adapted/std_tuple.hpp>
+#include <boost/fusion/include/std_tuple.hpp>
+
+#include <boost/fusion/include/boost_array.hpp>
+#include <boost/fusion/adapted/boost_tuple.hpp>
+#include <boost/fusion/include/boost_array.hpp>
+#include <boost/fusion/adapted/boost_tuple.hpp>
 
 // clang-format off
 

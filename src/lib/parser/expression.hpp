@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 #include <flatmessage/ast/ast.hpp>
-#include "config.hpp"
 
 #include <boost/spirit/home/x3.hpp>
 

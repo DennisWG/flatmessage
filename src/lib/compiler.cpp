@@ -21,6 +21,7 @@ limitations under the License.
 #include <fmt/format.h>
 
 #include <iostream>
+#include <fstream>
 #include <unordered_map>
 #include <unordered_set>
 

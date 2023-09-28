@@ -28,6 +28,7 @@ limitations under the License.
 namespace flatmessage::parser
 {
     using x3::char_;
+    using x3::float_;
     using x3::double_;
     using x3::eoi;
     using x3::eol;
@@ -64,20 +65,22 @@ namespace flatmessage::parser
     auto const attribute_vector
         = x3::rule<struct attribute_vector_class, std::vector<ast::attribute>>("attribute_vector") = +attribute;
 
-    auto const float_def = x3::rule<struct float_def_class, double>("float")
-        = int_ >> (char_('.') > int_) >> char_('f');
+    //auto const float_def = x3::rule<struct float_def_class, double>("float")
+    //    = int_ >> (char_('.') > int_) >> char_('f');
 
-    auto const double_def = x3::rule<struct double_def_class, double>("double") = int_ >> (char_('.') > int_);
+    //auto const double_def = x3::rule<struct double_def_class, double>("double") = int_ >> (char_('.') > int_);
 
     auto const quoted_string = x3::rule<struct quoted_string_class, std::string>("quoted_string")
         = lexeme['"' >> +(char_ - '"') >> '"'];
 
-    auto const value_def = x3::rule<struct value_class, ast::default_value_t>("value")
-        = (quoted_string | float_def | double_def | int_);
+    auto const value_def = x3::rule<struct value_class, ast::default_value_t>("value") = (int_ | quoted_string | double_);
 
     auto const default_value_def = '=' > value_def;
 
     auto const annotation_def = '[' > identifier > -default_value > ']';
+    // To Test:
+    // auto const annotation_def = '[' > ((identifier > -default_value) % ',') > ']';
+    // This will create a std::vector of identifier pairs that are seperated by ','
 
     auto const data_def = *annotation >> lit("data") > identifier > '{' > attribute_vector > '}';
 

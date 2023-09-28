@@ -7,8 +7,7 @@ add_executable (test_${PROJECT_NAME}
     template_generator.cpp
 )
 
-target_link_libraries(test_${PROJECT_NAME} ${PROJECT_NAME})
-target_link_libraries(test_${PROJECT_NAME} ${Boost_LIBRARIES})
+target_link_libraries(test_${PROJECT_NAME} ${PROJECT_NAME} Boost::filesystem Boost::regex Boost::system)
 
 target_include_directories(test_${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/contrib/testinator/src/include)
 
@@ -22,15 +21,7 @@ set_target_properties(test_${PROJECT_NAME}
         VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-# TODO: Remove once Visual Studio uses CMake 3.8 or higher
- if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")		
-    set(MY_CXX_FLAGS_LIST		
-        /std:c++latest
-    )		
-    string(REPLACE ";" " " MY_CXX_FLAGS "${MY_CXX_FLAGS_LIST}")
- 		
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MY_CXX_FLAGS}")
- endif()
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
 
 include(Testinator)
 ADD_TESTINATOR_TESTS (test_${PROJECT_NAME})

@@ -34,7 +34,9 @@ namespace flatmessage
         using error_handler_type = error_handler<iterator_type>;
 
         // Combined Error Handler and Phrase Parse Context
-        using context_type = x3::with_context<error_handler_tag, std::reference_wrapper<error_handler_type> const,
-                                              phrase_context_type>::type;
+        // using context_type = x3::with_context<error_handler_tag, std::reference_wrapper<error_handler_type> const,
+        //                                       phrase_context_type>::type;
+
+        using context_type = x3::context<error_handler_tag, std::reference_wrapper<error_handler_type>, phrase_context_type>;
     }
 }
