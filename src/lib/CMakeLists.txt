@@ -18,9 +18,9 @@ target_include_directories(${PROJECT_NAME}
     PRIVATE
         "${PROJECT_SOURCE_DIR}/contrib/fmt/include"
         ${PROJECT_SOURCE_DIR}/contrib/inja/src
-        ${nlohmann_json_INCLUDE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME}
     Boost::filesystem Boost::regex Boost::system Boost::spirit
+    nlohmann_json::nlohmann_json
 )

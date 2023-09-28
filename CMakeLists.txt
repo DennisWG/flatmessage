@@ -18,7 +18,14 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/boostorg/boost.git
   GIT_TAG boost-1.83.0
 )
-FetchContent_MakeAvailable(Boost)
+
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.11.2
+)
+
+FetchContent_MakeAvailable(Boost nlohmann_json)
 
 # Testing
 include(CTest)
