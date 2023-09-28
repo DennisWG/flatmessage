@@ -15,13 +15,14 @@ limitations under the License.
 */
 
 #include <flatmessage/compiler.hpp>
+#include <flatmessage/exception.hpp>
 #include <flatmessage/generator/template_generator.hpp>
 #include <flatmessage/parser.hpp>
 
 #include <fmt/format.h>
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -196,7 +197,7 @@ namespace flatmessage
 
         // Stores translation_units by their module names
         std::unordered_map<std::string, translation_unit> _modules;
-        
+
         // A set of known enums. These are being exported by the translation units
         std::unordered_set<std::string> _known_enums;
         // A set of known data types. These are being exported by the translation units
@@ -215,7 +216,7 @@ namespace flatmessage
                       std::string error_message;
                       auto ast = parser::parse_file(path, error_message);
                       if (!error_message.empty())
-                          throw std::exception(error_message.c_str());
+                          throw flatmessage::exception(error_message.c_str());
 
                       using cf = compiler_flags;
 
@@ -341,7 +342,7 @@ namespace flatmessage
 
         if (!impl.semantic_analyze(translation_units))
             return false;
-        
+
         impl.generate_code(translation_units, options.output_path, options.file_extension);
         return true;
     }
