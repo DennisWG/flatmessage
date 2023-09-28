@@ -24,3 +24,5 @@ target_link_libraries(${PROJECT_NAME}
     Boost::filesystem Boost::regex Boost::system Boost::spirit
     nlohmann_json::nlohmann_json
 )
+
+install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX})
