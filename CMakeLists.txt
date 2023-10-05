@@ -13,6 +13,8 @@ include(FetchContent)
 set(Boost_USE_STATIC_LIBS ON)
 set(BOOST_IOSTREAMS_ENABLE_ZLIB OFF)
 
+message("Downloading libraries. This may take a while, please be patient...")
+
 FetchContent_Declare(
   Boost
   GIT_REPOSITORY https://github.com/boostorg/boost.git
@@ -26,6 +28,8 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(Boost nlohmann_json)
+
+message("... downloading done!")
 
 # Testing
 include(CTest)
